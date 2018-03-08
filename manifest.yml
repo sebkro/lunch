@@ -1,0 +1,12 @@
+---
+applications:
+- name: lunch-location
+  memory: 1G
+  instances: 1
+  buildpack: java_buildpack
+  path: ./target/locationService-0.0.1-SNAPSHOT.jar
+  random-route: true
+  services:
+   - survey-mongo
+   - keyvalue-config-server
+   - keyvalue-service-registry

@@ -1,0 +1,18 @@
+---
+
+spring:
+  application:
+    name: cgi-bootcamp-survey
+
+management:
+  security:
+    enabled: false
+
+security:
+  basic:
+    enabled: false
+
+jwt:
+  publicKey: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCb4jUveRZUUT7iFKlOFVBOjHCJ3XyjSjvgMMW4+RTk+P3zaUxtciTNViZme9PEdzgk4KfVw5iCWl71tWJozn3KSThj/GF4sxZ2fdeZW00T4lC8GHY67XuXyNgKsJp/HiqX+6lB1mzUMXI5/W3WtV2vizpQBdwYODYLsd+qGxR0vwIDAQAB
+  issuer: com.cgi.bootcamp
+    
