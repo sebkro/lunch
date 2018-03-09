@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,12 +27,12 @@ public class CiaoMammaParser implements MenuParser {
 		List<Menu> result = new ArrayList<>();
 		try {
 			Document doc = Jsoup.connect(url.toString()).get();
-			doc.getElementsByTag("h3").stream()
+			result = doc.getElementsByTag("h3").stream()
 				.filter(elem -> headers.contains(elem.text().trim().toLowerCase()))
 				.map(elem -> elem.nextElementSibling().getElementsByTag("dt"))
 				.flatMap(elem -> elem.stream())
 				.map(elem -> toMenu(elem))
-				.forEach(System.out::println);
+				.collect(Collectors.toList());
 		} catch (Exception e) {
 			LOGGER.error("Could not parse menu for {} with {}", url , CiaoMammaParser.class);
 		}
@@ -51,7 +52,10 @@ public class CiaoMammaParser implements MenuParser {
 		if (priceElem != null) {
 			price = priceElem.text();
 		}
-		return new Menu(title, description, price);
+		return Menu.builder()
+			.title(title)
+			.description(description)
+			.price(price).build();
 	}
 
 	public static void main(String[] args) throws MalformedURLException {

@@ -1,7 +1,5 @@
 package com.lunch.location.services.parser;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +9,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class Menu {
+public class MenuVariant {
 	
-	private String title;
 	private String description;
 	private String price;
-	private List<MenuVariant> variants;
 
 }
