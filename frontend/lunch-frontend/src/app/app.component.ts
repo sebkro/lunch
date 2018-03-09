@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { LocationListComponent } from './components/location-list/location-list.component';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app';
+  title = 'LunchFinder';
+
+  @ViewChild(LocationListComponent) locationListComponent: LocationListComponent;
+
+  findLocationsButtonClicked(formGroup) {
+    this.locationListComponent.findLocations(formGroup);
+  }
 }
