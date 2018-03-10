@@ -3,8 +3,21 @@
 .mat-slider-horizontal {
   width : 100%;
 }
+
 body {
   padding-top: 54px;
+}
+
+agm-map {
+  height: 300px;
+}
+
+.form-group {
+    width: 100%;
+}
+
+.form-group label {
+    width: 100%;
 }
 
 @media (min-width: 992px) {

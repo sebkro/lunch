@@ -3,11 +3,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { } from 'googlemaps';
 import { MapsAPILoader } from '@agm/core';
 import { Point } from './../data-model';
+import { GoogleService } from '../../services/google/google.service';
 
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
-  styleUrls: ['./filter.component.css']
+  styles: []
 })
 export class FilterComponent implements OnInit {
 
@@ -26,8 +27,9 @@ export class FilterComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private mapsAPILoader: MapsAPILoader,
-    private ngZone: NgZone
-  ) {}
+    private ngZone: NgZone,
+    private googleService: GoogleService
+  ) { }
 
   ngOnInit() {
     this.zoom = 12;
@@ -38,13 +40,6 @@ export class FilterComponent implements OnInit {
 
     this.createForm();
     //this.setCurrentPosition();
-  }
-
-  createForm() {
-    this.filterForm = this.formBuilder.group({
-      address: ['Am Sandtorkai 72-73, 20457 Hamburg, Deutschland', Validators.required],
-      distance: ['1', Validators.required]
-    });
   }
 
   filterButtonClicked($event) {
@@ -79,17 +74,8 @@ export class FilterComponent implements OnInit {
     });
   }
 
-  distanceChanged (distance) {
-    this.distanceM = distance * 1000;
-  }
-
-  private setCurrentPosition() {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        this.latitude = position.coords.latitude;
-        this.longitude = position.coords.longitude;
-      });
-    }
+  distanceChanged($event) {
+    this.distanceM = $event.value * 1000;
   }
 
   placeMarker($event) {
@@ -102,7 +88,23 @@ export class FilterComponent implements OnInit {
     }
   }
 
-  getGeoLocation(latitude: number, longitude: number) {
+  private setCurrentPosition() {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.latitude = position.coords.latitude;
+        this.longitude = position.coords.longitude;
+      });
+    }
+  }
+
+  private createForm() {
+    this.filterForm = this.formBuilder.group({
+      address: ['Am Sandtorkai 72-73, 20457 Hamburg, Deutschland', Validators.required],
+      distance: ['1', Validators.required]
+    });
+  }
+
+  private getGeoLocation(latitude: number, longitude: number) {
     if (navigator.geolocation) {
       this.ngZone.run(() => {
         const geocoder = new google.maps.Geocoder();
@@ -118,7 +120,6 @@ export class FilterComponent implements OnInit {
             }
           }
         });
-
       });
     }
   }

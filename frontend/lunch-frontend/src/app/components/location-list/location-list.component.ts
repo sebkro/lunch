@@ -5,7 +5,7 @@ import { Point, Location } from './../data-model';
 @Component({
   selector: 'app-location-list',
   templateUrl: './location-list.component.html',
-  styleUrls: ['./location-list.component.css']
+  styles: []
 })
 export class LocationListComponent implements OnInit {
 
