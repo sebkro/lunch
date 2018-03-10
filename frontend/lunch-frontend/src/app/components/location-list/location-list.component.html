@@ -11,7 +11,7 @@
     </div>
     <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
       <div class="card-body">
-        <table class="table table-bordered">
+        <table *ngIf="location.menus.length > 0; else noMenu" class="table table-bordered">
           <thead>
             <tr>
               <th scope="col">Menü</th>
@@ -25,6 +25,7 @@
             </tr>
           </tbody>
         </table>
+        <ng-template #noMenu>Für dieses Restaurant wurde keine Karte gefunden.</ng-template>
       </div>
     </div>
   </div>
