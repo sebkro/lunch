@@ -1,18 +1,30 @@
-<form [formGroup]="filterForm">
-  <div class="form-group">
-    <label class="center-block">Adresse
-      <input class="form-control" formControlName="address">
-    </label>
+<div class="row">
+  <div class="col-md-6">
+    <form [formGroup]="filterForm">
+      <div class="form-group">
+        <label class="center-block">Adresse
+          <input (keyup)="addressChanged($event)" autocorrect="off" autocapitalize="off" spellcheck="off" type="text" class="form-control"
+            #search formControlName="address">
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="center-block">Entfernung
+          <select formControlName="distance" class="form-control input-lg">
+            <option value="1">1 km</option>
+            <option value="2">2 km</option>
+            <option value="5">5 km</option>
+          </select>
+        </label>
+      </div>
+    </form>
+    <button (click)="filterButtonClicked($event)" type="button" class="btn btn-primary">Locations suchen!</button>
+    <div *ngIf="error" class="alert alert-danger" role="alert">
+      <strong>Fehler!</strong> Bitte überprüfe deine Eingabe.
+    </div>
   </div>
-  <div class="form-group">
-    <label class="center-block">Entfernung
-      <input class="form-control" formControlName="distance">
-    </label>
+  <div class="col-md-6">
+    <agm-map [latitude]="latitude" [longitude]="longitude" [scrollwheel]="false" [zoom]="zoom" (mapClick)="placeMarker($event)">
+      <agm-marker [latitude]=" latitude " [longitude]="longitude "></agm-marker>
+    </agm-map>
   </div>
-</form>
-
-<button (click)="filterButtonClicked($event)" type="button" class="btn btn-primary">Locations suchen!</button>
-
-<div *ngIf="error" class="alert alert-danger" role="alert">
-  <strong>Achtung!</strong> Bitte überprüfe deine Eingabe.
 </div>

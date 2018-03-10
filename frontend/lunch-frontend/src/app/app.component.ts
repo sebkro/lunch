@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { LocationListComponent } from './components/location-list/location-list.component';
+import { Point } from './components/data-model';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,7 @@ export class AppComponent {
 
   @ViewChild(LocationListComponent) locationListComponent: LocationListComponent;
 
-  findLocationsButtonClicked(formGroup) {
-    this.locationListComponent.findLocations(formGroup);
+  findLocationsButtonClicked(point: Point) {
+    this.locationListComponent.findLocations(point);
   }
 }

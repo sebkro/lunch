@@ -1,28 +1,27 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
-
+import { } from 'googlemaps';
 
 @Injectable()
 export class GoogleService {
 
-  apiKey: 'AIzaSyAZuu3uYIFrFyOQOrOpPYxj8InKJodPDjQ';
-  geocodeApiUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
-  data: any = null;
+  error = false;
+  address: string;
 
-  constructor(private http: Http) { }
+  constructor() { }
 
-  geocode() {
-    return this.http.get(this.geocodeUrlComposite(null, null))
-      .map(res => res.json())
-      .subscribe(data => {
-        this.data = data;
-        console.log(this.data);
+  getGeoLocation(latitude: number, longitude: number) {
+    if (navigator.geolocation) {
+      const geocoder = new google.maps.Geocoder();
+      const latlng = new google.maps.LatLng(latitude, longitude);
+      const request = { latLng: latlng };
+      geocoder.geocode(request, (results, status) => {
+        if (status === google.maps.GeocoderStatus.OK) {
+          if (results[0] != null) {
+            this.address = results[0].formatted_address;
+          } else {
+            this.error = true;
+          }
+        }
       });
+    }
   }
-
-  private geocodeUrlComposite(streetAndNumber, postalcodeAndCity) {
-    return this.geocodeApiUrl + streetAndNumber + ',' + postalcodeAndCity + '&key=' + this.apiKey;
-  }
-
-}

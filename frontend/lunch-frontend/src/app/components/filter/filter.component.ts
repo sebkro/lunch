@@ -1,5 +1,8 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, NgZone, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { } from 'googlemaps';
+import { MapsAPILoader } from '@agm/core';
+import { Point } from './../data-model';
 
 @Component({
   selector: 'app-filter',
@@ -8,32 +11,108 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class FilterComponent implements OnInit {
 
-  @Output() notifyParent: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
+  @Output() notifyParent: EventEmitter<Point> = new EventEmitter<Point>();
 
+  @ViewChild('search') public searchElementRef: ElementRef;
 
   filterForm: FormGroup;
   error = false;
+  address: string;
+  latitude: number;
+  longitude: number;
+  zoom: number;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private mapsAPILoader: MapsAPILoader,
+    private ngZone: NgZone
+  ) {
     this.createForm();
   }
 
   createForm() {
     this.filterForm = this.formBuilder.group({
-      address: ['', Validators.required],
-      distance: ['', Validators.required]
+      address: ['Am Sandtorkai 72-73, 20457 Hamburg, Deutschland', Validators.required],
+      distance: ['1', Validators.required]
     });
   }
 
-  filterButtonClicked(event) {
+  filterButtonClicked($event) {
     if (this.filterForm.valid) {
-      this.notifyParent.emit(this.filterForm);
+      this.notifyParent.emit(new Point(this.latitude, this.longitude));
     } else {
       this.error = true;
     }
   }
 
   ngOnInit() {
+    this.zoom = 15;
+    this.latitude = 53.542733;
+    this.longitude = 9.986065;
+    this.address = 'Am Sandtorkai 72-73, 20457 Hamburg, Deutschland';
+    //this.setCurrentPosition();
   }
 
+  addressChanged() {
+    this.mapsAPILoader.load().then(() => {
+      const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
+        types: ['address']
+      });
+      autocomplete.addListener('place_changed', () => {
+        this.ngZone.run(() => {
+          //get the place result
+          const place: google.maps.places.PlaceResult = autocomplete.getPlace();
+
+          //verify result
+          if (place.geometry === undefined || place.geometry === null) {
+            return;
+          }
+
+          //set latitude, longitude and zoom
+          this.latitude = place.geometry.location.lat();
+          this.longitude = place.geometry.location.lng();
+          this.zoom = 12;
+        });
+      });
+    });
+  }
+
+  private setCurrentPosition() {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.latitude = position.coords.latitude;
+        this.longitude = position.coords.longitude;
+      });
+    }
+  }
+
+  placeMarker($event) {
+    this.latitude = $event.coords.lat;
+    this.longitude = $event.coords.lng;
+    if (this.latitude != null && this.longitude != null) {
+      this.ngZone.run(() => {
+        this.getGeoLocation(this.latitude, this.longitude);
+        this.filterForm.controls['address'].setValue(this.address);
+      });
+    }
+  }
+
+  getGeoLocation(latitude: number, longitude: number) {
+    if (navigator.geolocation) {
+      this.ngZone.run(() => {
+        const geocoder = new google.maps.Geocoder();
+        const latlng = new google.maps.LatLng(latitude, longitude);
+        const request = { latLng: latlng };
+        geocoder.geocode(request, (results, status) => {
+          if (status === google.maps.GeocoderStatus.OK) {
+            if (results[0] != null) {
+              this.address = results[0].formatted_address;
+            } else {
+              this.error = true;
+            }
+          }
+        });
+      });
+    }
+  }
 }
