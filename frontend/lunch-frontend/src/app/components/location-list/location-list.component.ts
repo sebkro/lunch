@@ -13,7 +13,9 @@ export class LocationListComponent implements OnInit {
 
   findLocations(point: Point) {
     console.log('liste filtern');
-    this.locationService.findLocation(point);
+    this.locationService.findLocations(point).subscribe(elem => {
+      console.log(elem);
+    });
   }
 
   ngOnInit() {

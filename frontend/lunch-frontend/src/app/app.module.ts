@@ -8,6 +8,8 @@ import { FilterComponent } from './components/filter/filter.component';
 import { LocationListComponent } from './components/location-list/location-list.component';
 import { GoogleService } from './services/google/google.service';
 import { LocationService } from './services/location/location.service';
+import { HttpModule } from '@angular/http';
+
 
 @NgModule({
   declarations: [
@@ -19,6 +21,7 @@ import { LocationService } from './services/location/location.service';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyAZuu3uYIFrFyOQOrOpPYxj8InKJodPDjQ',
       libraries: ['places']
