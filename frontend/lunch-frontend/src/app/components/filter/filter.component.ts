@@ -98,7 +98,6 @@ export class FilterComponent implements OnInit {
     if (this.latitude != null && this.longitude != null) {
       this.ngZone.run(() => {
         this.getGeoLocation(this.latitude, this.longitude);
-        this.filterForm.controls['address'].setValue(this.address);
       });
     }
   }
@@ -113,11 +112,13 @@ export class FilterComponent implements OnInit {
           if (status === google.maps.GeocoderStatus.OK) {
             if (results[0] != null) {
               this.address = results[0].formatted_address;
+              this.filterForm.controls['address'].setValue(this.address);
             } else {
               this.error = true;
             }
           }
         });
+
       });
     }
   }
