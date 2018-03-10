@@ -29,7 +29,7 @@ public class LocationController {
 	private LocationService locationService;
 
 	@CrossOrigin
-	@RequestMapping(method=RequestMethod.GET, produces="application/json", path="/find/{longitude}/{latitude:.+}")
+	@RequestMapping(method=RequestMethod.GET, produces="application/json", path="/find/{latitude}/{longitude:.+}")
 	public List<LocationDto> getValues(
 			@PathVariable("longitude") double longitude,
 			@PathVariable("latitude") double latitude,
