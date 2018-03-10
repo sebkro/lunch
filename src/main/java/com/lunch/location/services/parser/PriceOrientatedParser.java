@@ -107,26 +107,22 @@ public class PriceOrientatedParser {
 		return result;
 	}
 
-//	public static void main(String[] args) throws MalformedURLException {
-////		 URL url = new URL("http://feinkosthafencity.de/#front-page-2");
-////		 URL url = new URL("http://www.thegreek.hamburg/speisekarte/");
-//		// URL url = new URL("https://www.avarina.de/vorspeisen.htm");
-//		// URL url = new URL("https://www.avarina.de/tagesgerichte.htm");
-////		 URL url = new URL("http://www.restaurant-india-house-hamburg.de/speisen/");
-//		// URL url = new URL("http://www.salathai.de/speisekarte/");
-////		URL url = new URL("http://www.ciaomamma.de/index.php/menu");
-//		// URL url = new
-//		// URL("http://www.restaurant-fischmarkt.de/vorspeisen.html");
-////		 URL url = new URL("https://www.greenlovers.de/essen/salate-bowls");
-////		 URL url = new URL("https://www.maredo.de/lunch/");
-////		 URL url = new URL("http://feinkosthafencity.de/");
+	public static void main(String[] args) {
+//		 URL url = new URL("http://feinkosthafencity.de/#front-page-2");
+//		 URL url = new URL("http://www.thegreek.hamburg/speisekarte/");
+		// URL url = new URL("https://www.avarina.de/vorspeisen.htm");
+		// URL url = new URL("https://www.avarina.de/tagesgerichte.htm");
+//		 URL url = new URL("http://www.restaurant-india-house-hamburg.de/speisen/");
+		// URL url = new URL("http://www.salathai.de/speisekarte/");
+//		URL url = new URL("http://www.ciaomamma.de/index.php/menu");
+		// URL url = new
+		// URL("http://www.restaurant-fischmarkt.de/vorspeisen.html");
+//		 URL url = new URL("https://www.greenlovers.de/essen/salate-bowls");
 //		 URL url = new URL("https://www.maredo.de/lunch/");
-//		PriceOrientatedParser parser = new PriceOrientatedParser(false, false);
-//		PriceOrientatedParser parser1 = new PriceOrientatedParser(true, false);
-//		PriceOrientatedParser parser2= new PriceOrientatedParser(false, true);
-////		System.out.println(parser.getMenus(url));
-//		System.out.println(parser1.getMenus(url));
-////		System.out.println(parser2.getMenus(url));
-//	}
+//		 URL url = new URL("http://feinkosthafencity.de/");
+//		 URL url = new URL("https://www.maredo.de/lunch/");
+		PriceOrientatedParser parser = new PriceOrientatedParser();
+		System.out.println(parser.getMenus("http://www.tibreizh.de/index.php/creperie/buchweizen_galettes", false, true));
+	}
 
 }

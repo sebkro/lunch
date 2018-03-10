@@ -4,6 +4,9 @@
   width : 100%;
 }
 
+.mat-slider-track-background {
+  background-color: grey;
+}
 body {
   padding-top: 54px;
 }
@@ -23,6 +26,37 @@ agm-map {
 .card {
   margin-bottom: 20px;
 }
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+/*-------------------------------------------------- */
+.first-row {
+  background-image : url('/assets/background-3007395_960_720.jpg');
+  background-repeat: no-repeat;
+  background-size : cover;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(78, 78, 78, 0.59);
+}
+.first-row-content {
+  background-color: #000000f0;
+  color: grey;
+  border-radius: 10px;
+}
+
 
 @media (min-width: 992px) {
   body {
