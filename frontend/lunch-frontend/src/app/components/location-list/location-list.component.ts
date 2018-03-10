@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LocationService } from '../../services/location/location.service';
-import { Point } from './../data-model';
+import { Point, Location } from './../data-model';
 
 @Component({
   selector: 'app-location-list',
@@ -9,12 +9,14 @@ import { Point } from './../data-model';
 })
 export class LocationListComponent implements OnInit {
 
+  locations: Location[];
+
   constructor(private locationService: LocationService) { }
 
   findLocations(point: Point) {
     console.log('liste filtern');
     this.locationService.findLocations(point).subscribe(elem => {
-      console.log(elem);
+      this.locations = elem;
     });
   }
 

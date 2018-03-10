@@ -1,6 +1,15 @@
 export class Location {
     name: string;
     description: string;
+    geoLocation: Point;
+    menus: Menu[];
+
+    constructor(name: string, description: string, geoLocation: Point, menus: Menu[]) {
+        this.name = name;
+        this.description = description;
+        this.geoLocation = geoLocation;
+        this.menus = menus;
+    }
 }
 
 export class Point {
@@ -16,4 +25,32 @@ export class Point {
     }
 }
 
-export const locations: Location[] = [];
+export class Menu {
+    title: string;
+    description: string;
+    price: number;
+    variants: string;
+
+    constructor(title: string, description: string, price: number, variants: string) {
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.variants = variants;
+
+    }
+}
+
+export class LocationFactory {
+    static empty(): Location {
+        return new Location('', '', new Point(0, 0), new Array<Menu>());
+    }
+
+    static fromObject(rawLocation: any): Location {
+        return new Location(
+            rawLocation.name,
+            rawLocation.description,
+            rawLocation.geoLocation,
+            rawLocation.menus
+        );
+    }
+}
