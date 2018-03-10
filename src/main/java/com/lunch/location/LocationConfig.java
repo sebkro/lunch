@@ -19,21 +19,21 @@ public class LocationConfig {
 	private String issuer;
 
 	
-	@Bean
-	public FilterRegistrationBean someFilterRegistration() {
-
-	    FilterRegistrationBean registration = new FilterRegistrationBean();
-	    registration.setFilter(jwtFilter());
-	    registration.addUrlPatterns("/*");
-	    registration.setName("jwtFilter");
-	    registration.setOrder(1);
-	    return registration;
-	} 
-
-	public JwtFilter jwtFilter() {
-	    JwtFilter filter = new JwtFilter(publicKey, issuer);
-	    filter.init();
-	    return filter;
-	}
+//	@Bean
+//	public FilterRegistrationBean someFilterRegistration() {
+//
+//	    FilterRegistrationBean registration = new FilterRegistrationBean();
+//	    registration.setFilter(jwtFilter());
+//	    registration.addUrlPatterns("/*");
+//	    registration.setName("jwtFilter");
+//	    registration.setOrder(1);
+//	    return registration;
+//	} 
+//
+//	public JwtFilter jwtFilter() {
+//	    JwtFilter filter = new JwtFilter(publicKey, issuer);
+//	    filter.init();
+//	    return filter;
+//	}
 
 }
