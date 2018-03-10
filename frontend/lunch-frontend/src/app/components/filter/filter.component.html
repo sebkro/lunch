@@ -9,10 +9,10 @@
       </div>
       <div class="form-group">
         <label class="center-block">Entfernung
-          <select formControlName="distance" class="form-control input-lg">
-            <option value="1">1 km</option>
-            <option value="2">2 km</option>
-            <option value="5">5 km</option>
+          <select (change)="distanceChanged($event.target.value)" formControlName="distance" class="form-control input-lg">
+            <option value="1.0">1 km</option>
+            <option value="2.0">2 km</option>
+            <option value="5.0">5 km</option>
           </select>
         </label>
       </div>
@@ -23,8 +23,9 @@
     </div>
   </div>
   <div class="col-md-6">
-    <agm-map [latitude]="latitude" [longitude]="longitude" [scrollwheel]="false" [zoom]="zoom" (mapClick)="placeMarker($event)">
-      <agm-marker [latitude]=" latitude " [longitude]="longitude "></agm-marker>
+    <agm-map [latitude]="latitude" [longitude]="longitude" [scrollwheel]="false" [zoom]="zoom" (mapClick)="placeMarker($event)" [clickableIcons]="false">
+      <agm-marker [latitude]="latitude" [longitude]="longitude"></agm-marker>
+      <agm-circle [latitude]="latitude" [longitude]="longitude" [clickable]="false" [radius]="distanceM"></agm-circle>
     </agm-map>
   </div>
 </div>

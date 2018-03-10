@@ -20,14 +20,24 @@ export class FilterComponent implements OnInit {
   address: string;
   latitude: number;
   longitude: number;
+  distanceM: number;
   zoom: number;
 
   constructor(
     private formBuilder: FormBuilder,
     private mapsAPILoader: MapsAPILoader,
     private ngZone: NgZone
-  ) {
+  ) {}
+
+  ngOnInit() {
+    this.zoom = 12;
+    this.latitude = 53.542733;
+    this.longitude = 9.986065;
+    this.address = 'Am Sandtorkai 72-73, 20457 Hamburg, Deutschland';
+    this.distanceM = 1000;
+
     this.createForm();
+    //this.setCurrentPosition();
   }
 
   createForm() {
@@ -39,18 +49,10 @@ export class FilterComponent implements OnInit {
 
   filterButtonClicked($event) {
     if (this.filterForm.valid) {
-      this.notifyParent.emit(new Point(this.latitude, this.longitude));
+      this.notifyParent.emit(new Point(this.latitude, this.longitude, this.filterForm.controls['distance'].value));
     } else {
       this.error = true;
     }
-  }
-
-  ngOnInit() {
-    this.zoom = 15;
-    this.latitude = 53.542733;
-    this.longitude = 9.986065;
-    this.address = 'Am Sandtorkai 72-73, 20457 Hamburg, Deutschland';
-    //this.setCurrentPosition();
   }
 
   addressChanged() {
@@ -75,6 +77,10 @@ export class FilterComponent implements OnInit {
         });
       });
     });
+  }
+
+  distanceChanged (distance) {
+    this.distanceM = distance * 1000;
   }
 
   private setCurrentPosition() {
