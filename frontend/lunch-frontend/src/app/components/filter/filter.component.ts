@@ -102,7 +102,7 @@ export class FilterComponent implements OnInit {
       this.ngZone.run(() => {
         const geocoder = new google.maps.Geocoder();
         const latlng = new google.maps.LatLng(latitude, longitude);
-        const request = { latLng: latlng };
+        const request = { location: latlng };
         geocoder.geocode(request, (results, status) => {
           if (status === google.maps.GeocoderStatus.OK) {
             if (results[0] != null) {
