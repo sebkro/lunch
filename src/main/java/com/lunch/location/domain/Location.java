@@ -5,8 +5,6 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.geo.Point;
 
-import com.lunch.location.services.parser.Menu;
-
 import lombok.Data;
 
 @Data
@@ -18,6 +16,7 @@ public class Location {
 	private String description;
 	private Point geoLocation;
 	private List<String> menuUrls;
+	private MenuParserConfig menuParserConfig;
 	
 
 }

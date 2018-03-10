@@ -1,4 +1,4 @@
-package com.cgi.bootcamp.jwt;
+package com.lunch.jwt;
 
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
