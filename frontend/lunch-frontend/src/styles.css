@@ -20,6 +20,10 @@ agm-map {
     width: 100%;
 }
 
+.card {
+  margin-bottom: 20px;
+}
+
 @media (min-width: 992px) {
   body {
     padding-top: 56px;
