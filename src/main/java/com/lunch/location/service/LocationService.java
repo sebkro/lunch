@@ -24,7 +24,7 @@ public class LocationService {
 	@Autowired
 	private PriceOrientatedParser menuParser;
 	
-	public List<Pair<Location, List<Menu>>> getLocations(double longitude, double latitude, Distance distance) {
+	public List<Pair<Location, List<Menu>>> getLocations(double latitude, double longitude, Distance distance) {
 		return locationRepository.findByGeoLocationNear(new Point(latitude, longitude), distance).parallelStream()
 				.map(elem -> new Pair<Location, List<Menu>>(elem, getMenus(elem)))
 				.collect(Collectors.toList());
