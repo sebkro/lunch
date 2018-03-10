@@ -104,4 +104,25 @@ db.location.insert({
         "coordinates" : [53.541667, 9.986516]
     }
 });
+db.location.insert({
+    "name" : "Ciao Mamma!",
+    "description" : "",
+    "menuUrls" : ["http://www.ciaomamma.de/#menu"],
+    "geoLocation" : {
+        "type" : "Point",
+        "coordinates" : [53.543078, 9.985291]
+    },
+    "menuParserConfig" : {
+    	"parsePreviousElement" : true,
+    }
+});
+db.location.insert({
+	"name" : "Oh it's fresh",
+	"description" : "",
+	"menuUrls" : [],
+	"geoLocation" : {
+		"type" : "Point",
+		"coordinates" : [53.542909, 9.984944]
+	}
+});
 db.location.createIndex( { geoLocation : "2dsphere" } );

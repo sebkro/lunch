@@ -1,4 +1,4 @@
-package com.cgi.bootcamp.jwt;
+package com.lunch.jwt;
 
 import java.io.UnsupportedEncodingException;
 import java.security.KeyFactory;

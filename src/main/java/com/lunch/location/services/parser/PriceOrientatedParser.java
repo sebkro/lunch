@@ -1,6 +1,5 @@
 package com.lunch.location.services.parser;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,27 +14,21 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
-public class PriceOrientatedParser implements MenuParser {
+@Service
+public class PriceOrientatedParser {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PriceOrientatedParser.class);
 
 	private static final Pattern pricePattern = Pattern.compile("\\d{1,2}[.,]\\d{1,2}([^\\.\\d]|$)");
 	
-	private boolean doSearchPre;
-	private boolean doSearchPost;
-	
-	public PriceOrientatedParser(boolean doSearchPre, boolean doSearchPost) {
-		this.doSearchPost = doSearchPost;
-		this.doSearchPre = doSearchPre;
-	}	
-
-	@Override
-	public List<Menu> getMenus(URL url) {
+	public List<Menu> getMenus(String url, boolean doSearchPre, boolean doSearchPost) {
 		List<Menu> result = new ArrayList<>();
 		try {
+			
 			Document doc = Jsoup.connect(url.toString()).timeout(5000).get();
-			return doc.getElementsMatchingOwnText(pricePattern).stream().map(elem -> toMenu(elem))
+			return doc.getElementsMatchingOwnText(pricePattern).stream().map(elem -> toMenu(elem, doSearchPre, doSearchPost))
 					.filter(Optional::isPresent)
 					.map(Optional::get)
 					.collect(Collectors.toList());
@@ -46,7 +39,7 @@ public class PriceOrientatedParser implements MenuParser {
 		return result;
 	}
 	
-	private Optional<Menu> toMenu(Element priceElement) {
+	private Optional<Menu> toMenu(Element priceElement, boolean doSearchPre, boolean doSearchPost) {
 		Element maxParent = getMaxParent(priceElement);
 		String text = maxParent.text();
 		if (doSearchPost) {

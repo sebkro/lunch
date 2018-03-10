@@ -1,24 +1,23 @@
 package com.lunch.location;
 
 import java.util.List;
-
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PathVariable;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Metrics;
-import org.springframework.data.geo.Point;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lunch.location.domain.Location;
-import com.lunch.location.domain.LocationRepository;
+import com.lunch.location.service.LocationService;
+import com.lunch.location.web.LocationDto;
 
 @RestController
 @RefreshScope
@@ -26,25 +25,28 @@ public class LocationController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocationController.class);
 
-	@Value("${info.value:no value}")
-	private String special;
-
-	@Value("${info.bla:no value}")
-	private String bla;
-
 	@Autowired
-	private LocationRepository repository;
+	private LocationService locationService;
 
+	@CrossOrigin
 	@RequestMapping(method=RequestMethod.GET, produces="application/json", path="/find/{latitude}/{longitude:.+}")
-	
-	public List<Location> getValues(
+	public List<LocationDto> getValues(
 			@PathVariable("longitude") double longitude,
 			@PathVariable("latitude") double latitude,
 			@RequestParam(value = "distance", defaultValue = "1.0", required = false) double distance) {
 		LOGGER.info("Search Locations with latitude {} and longitude {}", latitude, longitude);
-		Point p = new Point(latitude, longitude);
 		Distance d = new Distance(distance, Metrics.KILOMETERS);
-		return repository.findByGeoLocationNear(p, d);
+		return locationService.getLocations(latitude, longitude, d).stream()
+				.map(elem -> {
+					LocationDto dto = new LocationDto();
+					dto.setDescription(elem.getValue0().getDescription());
+					dto.setId(elem.getValue0().getId());
+					dto.setName(elem.getValue0().getName());
+					dto.setGeoLocation(elem.getValue0().getGeoLocation());
+					dto.setMenus(elem.getValue1());
+					return dto;
+				})
+				.collect(Collectors.toList());
 	}
 
 	
