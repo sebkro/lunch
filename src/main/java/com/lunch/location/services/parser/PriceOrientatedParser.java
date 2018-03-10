@@ -1,6 +1,5 @@
 package com.lunch.location.services.parser;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +20,7 @@ public class PriceOrientatedParser implements MenuParser {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PriceOrientatedParser.class);
 
-	private static final Pattern euroPattern = Pattern.compile("(?=€).*");
-	private static final Pattern pricePattern = Pattern.compile("\\d{1,2}[^\\d]\\d{1,2}");
+	private static final Pattern pricePattern = Pattern.compile("\\d{1,2}[.,]\\d{1,2}([^\\.\\d]|$)");
 	
 	private boolean doSearchPre;
 	private boolean doSearchPost;
@@ -30,15 +28,17 @@ public class PriceOrientatedParser implements MenuParser {
 	public PriceOrientatedParser(boolean doSearchPre, boolean doSearchPost) {
 		this.doSearchPost = doSearchPost;
 		this.doSearchPre = doSearchPre;
-	}
+	}	
 
 	@Override
 	public List<Menu> getMenus(URL url) {
 		List<Menu> result = new ArrayList<>();
 		try {
-			Document doc = Jsoup.connect(url.toString()).get();
-			return doc.getElementsMatchingOwnText(euroPattern).stream().map(elem -> toMenu(elem))
-				.collect(Collectors.toList());
+			Document doc = Jsoup.connect(url.toString()).timeout(5000).get();
+			return doc.getElementsMatchingOwnText(pricePattern).stream().map(elem -> toMenu(elem))
+					.filter(Optional::isPresent)
+					.map(Optional::get)
+					.collect(Collectors.toList());
 
 		} catch (Exception e) {
 			LOGGER.error("Could not parse menu for {}", url);
@@ -46,7 +46,7 @@ public class PriceOrientatedParser implements MenuParser {
 		return result;
 	}
 	
-	private Menu toMenu(Element priceElement) {
+	private Optional<Menu> toMenu(Element priceElement) {
 		Element maxParent = getMaxParent(priceElement);
 		String text = maxParent.text();
 		if (doSearchPost) {
@@ -59,7 +59,11 @@ public class PriceOrientatedParser implements MenuParser {
 		if (prices.size() == 1) {
 			text = pricePattern.matcher(text).replaceAll("").replaceAll("€", "").trim();
 		}
-		return Menu.builder().description(text).price(prices.get(0)).build();
+		if (text.length() < 5) {
+			return Optional.empty();
+		} else {
+			return Optional.of(Menu.builder().description(text).price(prices.get(0)).build());
+		}
 		
 	}
 
@@ -84,12 +88,13 @@ public class PriceOrientatedParser implements MenuParser {
 	}
 
 	private Element getMaxParent(Element price) {
+		int startPriceCount = countPrices(price);
 		Element current = price;
 		int priceCount = 0;
-		while (current.hasParent() && priceCount < 2) {
+		while (current.hasParent() && priceCount <= startPriceCount) {
 			Element parent = current.parent();
 			priceCount = countPrices(parent);
-			if (priceCount < 2) {
+			if (priceCount <= startPriceCount) {
 				current = parent;
 			}
 		}
@@ -109,19 +114,26 @@ public class PriceOrientatedParser implements MenuParser {
 		return result;
 	}
 
-	public static void main(String[] args) throws MalformedURLException {
-		 URL url = new URL("http://feinkosthafencity.de/#front-page-2");
-//		 URL url = new URL("http://www.thegreek.hamburg/speisekarte/");
-		// URL url = new URL("https://www.avarina.de/vorspeisen.htm");
-		// URL url = new URL("https://www.avarina.de/tagesgerichte.htm");
-//		 URL url = new URL("http://www.restaurant-india-house-hamburg.de/speisen/");
-		// URL url = new URL("http://www.salathai.de/speisekarte/");
-//		URL url = new URL("http://www.ciaomamma.de/index.php/menu");
-		// URL url = new
-		// URL("http://www.restaurant-fischmarkt.de/vorspeisen.html");
-//		 URL url = new URL("https://www.greenlovers.de/essen/salate-bowls");
-		PriceOrientatedParser parser = new PriceOrientatedParser(false, false);
-		System.out.println(parser.getMenus(url));
-	}
+//	public static void main(String[] args) throws MalformedURLException {
+////		 URL url = new URL("http://feinkosthafencity.de/#front-page-2");
+////		 URL url = new URL("http://www.thegreek.hamburg/speisekarte/");
+//		// URL url = new URL("https://www.avarina.de/vorspeisen.htm");
+//		// URL url = new URL("https://www.avarina.de/tagesgerichte.htm");
+////		 URL url = new URL("http://www.restaurant-india-house-hamburg.de/speisen/");
+//		// URL url = new URL("http://www.salathai.de/speisekarte/");
+////		URL url = new URL("http://www.ciaomamma.de/index.php/menu");
+//		// URL url = new
+//		// URL("http://www.restaurant-fischmarkt.de/vorspeisen.html");
+////		 URL url = new URL("https://www.greenlovers.de/essen/salate-bowls");
+////		 URL url = new URL("https://www.maredo.de/lunch/");
+////		 URL url = new URL("http://feinkosthafencity.de/");
+//		 URL url = new URL("https://www.maredo.de/lunch/");
+//		PriceOrientatedParser parser = new PriceOrientatedParser(false, false);
+//		PriceOrientatedParser parser1 = new PriceOrientatedParser(true, false);
+//		PriceOrientatedParser parser2= new PriceOrientatedParser(false, true);
+////		System.out.println(parser.getMenus(url));
+//		System.out.println(parser1.getMenus(url));
+////		System.out.println(parser2.getMenus(url));
+//	}
 
 }

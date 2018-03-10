@@ -1,6 +1,5 @@
 package com.lunch.location.services.parser;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,10 +57,10 @@ public class CiaoMammaParser implements MenuParser {
 			.price(price).build();
 	}
 
-	public static void main(String[] args) throws MalformedURLException {
-		URL url = new URL("http://www.ciaomamma.de/index.php/menu");
-		CiaoMammaParser parser = new CiaoMammaParser();
-		parser.getMenus(url).forEach(System.out::println);
-	}
+//	public static void main(String[] args) throws MalformedURLException {
+//		URL url = new URL("http://www.ciaomamma.de/index.php/menu");
+//		CiaoMammaParser parser = new CiaoMammaParser();
+//		parser.getMenus(url).forEach(System.out::println);
+//	}
 
 }

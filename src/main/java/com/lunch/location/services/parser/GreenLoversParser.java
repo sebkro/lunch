@@ -1,7 +1,6 @@
 package com.lunch.location.services.parser;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +39,10 @@ public class GreenLoversParser implements MenuParser {
 		return result;
 	}
 
-	public static void main(String[] args) throws MalformedURLException {
-		URL url = new URL("https://www.greenlovers.de/essen/salate-bowls");
-		GreenLoversParser parser = new GreenLoversParser();
-		parser.getMenus(url).forEach(System.out::println);
-	}
+//	public static void main(String[] args) throws MalformedURLException {
+//		URL url = new URL("https://www.greenlovers.de/essen/salate-bowls");
+//		GreenLoversParser parser = new GreenLoversParser();
+//		parser.getMenus(url).forEach(System.out::println);
+//	}
 
 }

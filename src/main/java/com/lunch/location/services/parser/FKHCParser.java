@@ -1,7 +1,6 @@
 package com.lunch.location.services.parser;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,10 +89,10 @@ public class FKHCParser implements MenuParser {
 		return e.text().contains("Sie eine kleinere Portion");
 	}
 	
-	public static void main(String[] args) throws MalformedURLException {
-		URL url = new URL("http://feinkosthafencity.de/#front-page-2");
-		FKHCParser parser = new FKHCParser();
-		parser.getMenus(url).forEach(System.out::println);
-	}
+//	public static void main(String[] args) throws MalformedURLException {
+//		URL url = new URL("http://feinkosthafencity.de/#front-page-2");
+//		FKHCParser parser = new FKHCParser();
+//		parser.getMenus(url).forEach(System.out::println);
+//	}
 
 }
