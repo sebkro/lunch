@@ -9,6 +9,7 @@ import { LocationListComponent } from './components/location-list/location-list.
 import { GoogleService } from './services/google/google.service';
 import { LocationService } from './services/location/location.service';
 import { HttpModule } from '@angular/http';
+import { MatSliderModule } from '@angular/material';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { HttpModule } from '@angular/http';
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
+    MatSliderModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyAZuu3uYIFrFyOQOrOpPYxj8InKJodPDjQ',
       libraries: ['places']
