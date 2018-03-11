@@ -57,6 +57,17 @@ body {
   border-radius: 10px;
 }
 
+.list-group-item {
+  cursor: pointer;
+}
+.list-group-item:hover {
+  background-color: grey;
+}
+
+.active-location {
+  background-color: grey;
+}
+
 
 @media (min-width: 992px) {
   body {

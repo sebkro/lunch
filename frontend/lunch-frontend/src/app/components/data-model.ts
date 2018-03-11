@@ -1,10 +1,12 @@
 export class Location {
+    id: string;
     name: string;
     description: string;
     geoLocation: Point;
     menus: Menu[];
 
-    constructor(name: string, description: string, geoLocation: Point, menus: Menu[]) {
+    constructor(id: string, name: string, description: string, geoLocation: Point, menus: Menu[]) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.geoLocation = geoLocation;
@@ -42,11 +44,12 @@ export class Menu {
 
 export class LocationFactory {
     static empty(): Location {
-        return new Location('', '', new Point(0, 0), new Array<Menu>());
+        return new Location('', '', '', new Point(0, 0), new Array<Menu>());
     }
 
     static fromObject(rawLocation: any): Location {
         return new Location(
+            rawLocation.id,
             rawLocation.name,
             rawLocation.description,
             rawLocation.geoLocation,

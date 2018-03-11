@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LocationService } from '../../services/location/location.service';
-import { Point, Location } from './../data-model';
+import { Point, Location, Menu } from './../data-model';
 
 @Component({
   selector: 'app-location-list',
@@ -9,7 +9,10 @@ import { Point, Location } from './../data-model';
 })
 export class LocationListComponent implements OnInit {
 
-  locations: Location[];
+  mobile = false;
+  locations: Location[] = [];
+  currentMenus: Menu[] = [];
+  currentLocation = '';
 
   constructor(private locationService: LocationService) { }
 
@@ -17,10 +20,25 @@ export class LocationListComponent implements OnInit {
     console.log('liste filtern');
     this.locationService.findLocations(point).subscribe(elem => {
       this.locations = elem;
+      if (this.locations.length > 0) {
+        this.currentMenus = this.locations[0].menus;
+        this.currentLocation = this.locations[0].id;
+      }
     });
   }
 
   ngOnInit() {
+    if (document.getElementsByTagName('body')[0].clientWidth <= 768) {
+      this.mobile = true;
+    }
+  }
+
+  locationClicked(event: any) {
+    const clickedLocation = this.locations.find(elem => elem.id === event.target.id);
+    if (clickedLocation) {
+      this.currentMenus = clickedLocation.menus;
+      this.currentLocation = clickedLocation.id;
+    }
   }
 
 }
