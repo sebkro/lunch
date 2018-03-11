@@ -27,7 +27,7 @@ public class PriceOrientatedParser {
 		List<Menu> result = new ArrayList<>();
 		try {
 			
-			Document doc = Jsoup.connect(url.toString()).timeout(5000).get();
+			Document doc = Jsoup.connect(url.toString()).timeout(10000).get();
 			return doc.getElementsMatchingOwnText(pricePattern).stream().map(elem -> toMenu(elem, doSearchPre, doSearchPost))
 					.filter(Optional::isPresent)
 					.map(Optional::get)
