@@ -3,25 +3,17 @@
   <div *ngFor="let location of locations" class="card">
     <div class="card-header" id="headingOne">
       <h3 class="mb-0">
-        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-          <strong>{{location.name}}</strong>
-        </button>
+        <strong>{{location.name}}</strong>
       </h3>
       {{location.description}}
     </div>
-    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-      <div class="card-body">
-        <table *ngIf="location.menus.length > 0; else noMenu" class="table table-bordered">
-          <thead>
-            <tr>
-              <th scope="col">Menü</th>
-              <th scope="col">Preis</th>
-            </tr>
-          </thead>
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
+      <div class="card-body" style="padding:0">
+        <table *ngIf="location.menus.length > 0; else noMenu" class="table table-striped">
           <tbody>
             <tr *ngFor="let menu of location.menus">
               <td>{{menu.description}}</td>
-              <td>{{menu.price}} €</td>
+              <td>{{menu.price}}</td>
             </tr>
           </tbody>
         </table>
