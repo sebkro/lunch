@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  locationServiceUrl: 'http://igsepa-lunch-location.cfapps.io/'
 };

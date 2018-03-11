@@ -8,5 +8,12 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
+platformBrowserDynamic([
+  {
+    provide: 'LOCATION_SERVICE_URL',
+    useValue: environment.locationServiceUrl
+  }
+]
+
+).bootstrapModule(AppModule)
   .catch(err => console.log(err));

@@ -107,7 +107,7 @@ db.location.insert({
 db.location.insert({
     "name" : "Ciao Mamma!",
     "description" : "",
-    "menuUrls" : ["http://www.ciaomamma.de/#menu"],
+    "menuUrls" : ["http://www.ciaomamma.de/index.php/menu"],
     "geoLocation" : {
         "type" : "Point",
         "coordinates" : [53.543078, 9.985291]
