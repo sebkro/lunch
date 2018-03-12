@@ -1,23 +1,27 @@
+<div *ngIf="isLoading">
+  <app-spin-loader width="50px" height="50px" borderWidth="2px"></app-spin-loader>
+</div>
 <div *ngIf="!mobile" class="row">
   <div class="col-md-4">
-      <ul *ngFor="let location of locations" class="list-group">
-        <li [id]="location.id" [ngClass]="{'active-location':currentLocation === location.id}" (click)="locationClicked($event)" class="list-group-item">{{location.name}}</li>
-      </ul>
+    <ul *ngFor="let location of locations" class="list-group">
+      <li [id]="location.id" [ngClass]="{'active-location':currentLocation === location.id}" (click)="locationClicked($event)"
+        class="list-group-item">{{location.name}}</li>
+    </ul>
   </div>
   <div class="col-md-8">
-      <table *ngIf="currentMenus.length > 0; else noMenu" class="table table-striped">
-          <tbody>
-            <tr *ngFor="let menu of currentMenus">
-              <td>{{menu.description}}</td>
-              <td>{{menu.price}}</td>
-            </tr>
-          </tbody>
-        </table>
-        <ng-template #noMenu>Für dieses Restaurant wurde keine Karte gefunden.</ng-template>
+    <table *ngIf="currentMenus.length > 0; else noMenu" class="table table-striped">
+      <tbody>
+        <tr *ngFor="let menu of currentMenus">
+          <td>{{menu.description}}</td>
+          <td>{{menu.price}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #noMenu>Für dieses Restaurant wurde keine Karte gefunden.</ng-template>
   </div>
 </div>
 <div *ngIf="mobile" class="row">
-  <div  *ngFor="let location of locations" class="card visible-xs visible-sm">
+  <div *ngFor="let location of locations" class="card visible-xs visible-sm">
     <div class="card-header" id="headingOne">
       <h3 class="mb-0">
         <strong>{{location.name}}</strong>

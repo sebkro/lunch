@@ -10,13 +10,14 @@ import { GoogleService } from './services/google/google.service';
 import { LocationService } from './services/location/location.service';
 import { HttpModule } from '@angular/http';
 import { MatSliderModule } from '@angular/material';
-
+import { SpinLoaderComponent } from './components/shared/spin-loader/spin-loader.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     FilterComponent,
-    LocationListComponent
+    LocationListComponent,
+    SpinLoaderComponent
   ],
   imports: [
     BrowserModule,
@@ -28,6 +29,9 @@ import { MatSliderModule } from '@angular/material';
       apiKey: 'AIzaSyAZuu3uYIFrFyOQOrOpPYxj8InKJodPDjQ',
       libraries: ['places']
     })
+  ],
+  exports : [
+    SpinLoaderComponent
   ],
   providers: [GoogleService, LocationService],
   bootstrap: [AppComponent]

@@ -60,13 +60,21 @@ body {
 .list-group-item {
   cursor: pointer;
 }
+
+.list-group {
+  margin-bottom: 10px;
+}
+
 .list-group-item:hover {
   background-color: grey;
+  color: white;
 }
 
 .active-location {
   background-color: grey;
+  color: white
 }
+
 
 
 @media (min-width: 992px) {

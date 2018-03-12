@@ -9,6 +9,7 @@ import { Point } from './components/data-model';
 })
 export class AppComponent {
   title = 'LunchFinder';
+  isLoading = false;
 
   @ViewChild(LocationListComponent) locationListComponent: LocationListComponent;
 

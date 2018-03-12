@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { LocationService } from '../../services/location/location.service';
 import { Point, Location, Menu } from './../data-model';
 
@@ -13,11 +13,13 @@ export class LocationListComponent implements OnInit {
   locations: Location[] = [];
   currentMenus: Menu[] = [];
   currentLocation = '';
+  isLoading = false;
 
   constructor(private locationService: LocationService) { }
 
   findLocations(point: Point) {
     console.log('liste filtern');
+    this.isLoading = true;
     this.locationService.findLocations(point).subscribe(elem => {
       this.locations = elem;
       if (this.locations.length > 0) {
@@ -25,6 +27,7 @@ export class LocationListComponent implements OnInit {
         this.currentLocation = this.locations[0].id;
       }
     });
+    this.isLoading = false;
   }
 
   ngOnInit() {
