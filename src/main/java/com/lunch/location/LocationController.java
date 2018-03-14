@@ -48,8 +48,5 @@ public class LocationController {
 				})
 				.collect(Collectors.toList());
 	}
-
 	
-	
-
 }

@@ -38,7 +38,7 @@ db.location.insert({
 db.location.insert({
     "name" : "Maredo",
     "description" : "MAREDO - das ist Leidenschaft für beste Steaks, Erstklassige Küche und genussvolles Miteinander.",
-    "menuUrls" : ["https://www.maredo.de/speisekarte/steaks/", "https://www.maredo.de/speisekarte/salate/", "https://www.maredo.de/speisekarte/vorspeisen-suppen/", "https://www.maredo.de/speisekarte/klassiker/", "https://www.maredo.de/speisekarte/burger/"],
+    "menuUrls" : ["https://www.maredo.de/speisekarte/steaks/", "https://www.maredo.de/speisekarte/salate/", "https://www.maredo.de/speisekarte/vorspeisen-suppen/", "https://www.maredo.de/speisekarte/klassiker/", "https://www.maredo.de/speisekarte/burger/", "https://www.maredo.de/lunch/"],
     "geoLocation" : {
         "type" : "Point",
         "coordinates" : [ 

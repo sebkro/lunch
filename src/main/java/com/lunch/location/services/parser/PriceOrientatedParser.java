@@ -2,13 +2,13 @@ package com.lunch.location.services.parser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.javatuples.Pair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,19 +18,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PriceOrientatedParser {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(PriceOrientatedParser.class);
-
-	private static final Pattern pricePattern = Pattern.compile("\\d{1,2}[.,]\\d{1,2}([^\\.\\d]|$)");
 	
-	public List<Menu> getMenus(String url, boolean doSearchPre, boolean doSearchPost) {
-		List<Menu> result = new ArrayList<>();
+	private static final Logger LOGGER = LoggerFactory.getLogger(PriceFocusedParser.class);
+
+	public static final Pattern pricePattern = Pattern.compile("\\d{1,2}[.,]\\d{1,2}([^\\.\\d]|$)");
+
+	public List<Pair<Element, List<Element>>> getMenus(String url) {
+		List<Pair<Element, List<Element>>> result = new ArrayList<>();
 		try {
 			
 			Document doc = Jsoup.connect(url.toString()).timeout(10000).get();
-			return doc.getElementsMatchingOwnText(pricePattern).stream().map(elem -> toMenu(elem, doSearchPre, doSearchPost))
-					.filter(Optional::isPresent)
-					.map(Optional::get)
+			return doc.getElementsMatchingOwnText(pricePattern).stream().map(elem -> toMenu(elem))
 					.collect(Collectors.toList());
 
 		} catch (Exception e) {
@@ -39,45 +37,29 @@ public class PriceOrientatedParser {
 		return result;
 	}
 	
-	private Optional<Menu> toMenu(Element priceElement, boolean doSearchPre, boolean doSearchPost) {
+	private Pair<Element, List<Element>> toMenu(Element priceElement) {
 		Element maxParent = getMaxParent(priceElement);
-		String text = maxParent.text();
-		if (doSearchPost) {
-			text = text + " " + getNextNonEmptyElement(maxParent).map(Element::text).orElse("");
-		}
-		if (doSearchPre) {
-			text = getPreviousNonEmptyElement(maxParent).map(Element::text).orElse("") + " " + text;
-		}
-		List<String> prices = getPrices(priceElement);
-		if (prices.size() == 1) {
-			text = pricePattern.matcher(text).replaceAll("").replaceAll("€", "").trim();
-		}
-		if (text.length() < 5) {
-			return Optional.empty();
-		} else {
-			return Optional.of(Menu.builder().description(text).price(prices.get(0)).build());
-		}
-		
+		List<Element> previousElements = getPreviousNonEmptyElement(maxParent).stream()
+				.collect(Collectors.toList());
+		return new Pair<Element, List<Element>>(maxParent, previousElements);
 	}
 
-	private Optional<Element> getPreviousNonEmptyElement(Element e) {
+	private List<Element> getPreviousNonEmptyElement(Element e) {
 		return findSiblingsNonEmptyElement(e, elem -> elem.previousElementSibling());
 	}
 
-	private Optional<Element> getNextNonEmptyElement(Element e) {
-		return findSiblingsNonEmptyElement(e, elem -> elem.nextElementSibling());
-	}
-
-	private Optional<Element> findSiblingsNonEmptyElement(Element start, Function<Element, Element> traverser) {
+	private List<Element> findSiblingsNonEmptyElement(Element start, Function<Element, Element> traverser) {
+		List<Element> result = new ArrayList<>();
 		Element current = null;
-		String currentText = null;
 		Element next = traverser.apply(start);
-		while (next != null && countPrices(next) == 0 && StringUtils.isBlank(currentText)) {
+		while (next != null && countPrices(next) == 0) {
 			current = next;
-			currentText = next.text();
+			if (StringUtils.isNotBlank(current.text())) {
+				result.add(current);
+			}
 			next = traverser.apply(current);
 		}
-		return Optional.ofNullable(current);
+		return result;
 	}
 
 	private Element getMaxParent(Element price) {
@@ -98,7 +80,7 @@ public class PriceOrientatedParser {
 		return getPrices(element).size();
 	}
 	
-	private List<String> getPrices(Element element) {
+	public List<String> getPrices(Element element) {
 		List<String> result = new ArrayList<>();
 		Matcher priceMatcher = pricePattern.matcher(element.text());
 		while (priceMatcher.find()) {
@@ -122,7 +104,10 @@ public class PriceOrientatedParser {
 //		 URL url = new URL("http://feinkosthafencity.de/");
 //		 URL url = new URL("https://www.maredo.de/lunch/");
 		PriceOrientatedParser parser = new PriceOrientatedParser();
-		System.out.println(parser.getMenus("http://www.tibreizh.de/index.php/creperie/buchweizen_galettes", false, true));
+		parser.getMenus("https://www.maredo.de/lunch").forEach(elem -> {
+			System.out.println(elem.getValue0().text());
+			System.out.println(elem.getValue1().stream().map(Element::text).collect(Collectors.toList()));
+		});
 	}
 
 }

@@ -1,12 +1,8 @@
 package com.lunch.location;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-
-import com.lunch.location.security.JwtFilter;
 
 @Configuration
 @EnableMongoRepositories

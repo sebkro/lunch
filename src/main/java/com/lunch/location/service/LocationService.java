@@ -17,9 +17,8 @@ import org.springframework.stereotype.Service;
 
 import com.lunch.location.domain.Location;
 import com.lunch.location.domain.LocationRepository;
-import com.lunch.location.domain.MenuParserConfig;
 import com.lunch.location.services.parser.Menu;
-import com.lunch.location.services.parser.PriceOrientatedParser;
+import com.lunch.location.services.parser.NlpParser;
 
 @Service
 public class LocationService {
@@ -33,7 +32,7 @@ public class LocationService {
 	private MongoOperations mongoOperations;
 	
 	@Autowired
-	private PriceOrientatedParser menuParser;
+	private NlpParser menuParser;
 	
 	public List<Pair<Location, List<Menu>>> getLocations(double latitude, double longitude, Distance distance) {
 		ZonedDateTime currentDate = ZonedDateTime.now( ZoneOffset.UTC );
@@ -42,16 +41,13 @@ public class LocationService {
 				.map(elem -> new Pair<Location, List<Menu>>(elem, getMenus(elem, timestampSeconds)))
 				.collect(Collectors.toList());
 	}
-
+	
 	private List<Menu> getMenus(Location location, long timestampSeconds) {
 		if (useStoredMenus(location, timestampSeconds)) {
 			return location.getMenus();
 		} else {
-			MenuParserConfig config = location.getMenuParserConfig();
-			boolean searchPre = config == null ? false : config.isParsePreviousElement();
-			boolean searchPost = config == null ? false : config.isParseNextElement();
 			List<Menu> result = location.getMenuUrls().parallelStream()
-					.map(elem ->  menuParser.getMenus(elem, searchPre, searchPost))
+					.map(elem ->  menuParser.getMenus(elem))
 					.flatMap(elem -> elem.stream())
 					.collect(Collectors.toList());
 			updateLocationWithMenus(location, result, timestampSeconds);

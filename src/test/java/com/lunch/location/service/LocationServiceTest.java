@@ -35,7 +35,7 @@ import com.lunch.location.domain.LocationRepository;
 import com.lunch.location.domain.LocationSpec;
 import com.lunch.location.domain.MenuSpec;
 import com.lunch.location.services.parser.Menu;
-import com.lunch.location.services.parser.PriceOrientatedParser;
+import com.lunch.location.services.parser.NlpParser;
 
 public class LocationServiceTest {
 
@@ -46,7 +46,7 @@ public class LocationServiceTest {
 	private LocationRepository locationRepository;
 
 	@Mock
-	private PriceOrientatedParser menuParser;
+	private NlpParser menuParser;
 	
 	@Mock
 	private MongoOperations mongoOperations;
@@ -79,9 +79,9 @@ public class LocationServiceTest {
 				
 
 		when(locationRepository.findByGeoLocationNear(any(Point.class), any(Distance.class))).thenReturn(locations);
-		when(menuParser.getMenus(locations.get(0).getMenuUrls().get(0), false, false)).thenReturn(menusLocation1);
-		when(menuParser.getMenus(locations.get(1).getMenuUrls().get(0), false, false)).thenReturn(menusLocation2Part1);
-		when(menuParser.getMenus(locations.get(1).getMenuUrls().get(1), false, false)).thenReturn(menusLocation2Part2);
+		when(menuParser.getMenus(locations.get(0).getMenuUrls().get(0))).thenReturn(menusLocation1);
+		when(menuParser.getMenus(locations.get(1).getMenuUrls().get(0))).thenReturn(menusLocation2Part1);
+		when(menuParser.getMenus(locations.get(1).getMenuUrls().get(1))).thenReturn(menusLocation2Part2);
 
 	}
 
