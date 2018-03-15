@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.javatuples.Pair;
 import org.jsoup.nodes.Element;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.stanford.nlp.ling.TaggedWord;
@@ -16,11 +15,14 @@ import edu.stanford.nlp.ling.TaggedWord;
 @Service
 public class NlpParser {
 	
-	@Autowired
 	private PriceOrientatedParser parser;
 	
-	@Autowired
 	private MenuPosTagger posTagger;
+	
+	public NlpParser(PriceOrientatedParser parser, MenuPosTagger posTagger) {
+		this.parser = parser;
+		this.posTagger = posTagger;
+	}
 
 
 	public List<Menu> getMenus(String url) {
@@ -52,7 +54,7 @@ public class NlpParser {
 	}
 	
 	public boolean shouldAddElement(Element elem) {
-		List<List<TaggedWord>> tagged = posTagger.posTag(elem);
+		List<List<TaggedWord>> tagged = posTagger.posTag(elem.text());
 		Map<String, Long> taggedCount = tagged.stream().flatMap(sentence -> sentence.stream())
 			.map(TaggedWord::tag)
 			.collect(Collectors.groupingBy((String s) -> s, Collectors.counting()));
