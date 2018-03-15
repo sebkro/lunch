@@ -10,6 +10,9 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 import com.lunch.location.services.parser.MenuPosTagger;
 
+import weka.classifiers.trees.RandomForest;
+import weka.core.SerializationHelper;
+
 @Configuration
 @EnableMongoRepositories
 public class LocationConfig {
@@ -22,10 +25,18 @@ public class LocationConfig {
 	
 	@Value("classpath:german-fast.tagger")
     private Resource posTaggerModelFile;
+
+	@Value("classpath:randomForest.model")
+	private Resource randomForestModel;
 	
 	@Bean
-	MenuPosTagger menuPosTagger() throws IOException {
+	public MenuPosTagger menuPosTagger() throws IOException {
 		return new MenuPosTagger(posTaggerModelFile.getFile().getPath());
+	}
+
+	@Bean
+	public RandomForest randomForest() throws Exception {
+		return (RandomForest) SerializationHelper.read(randomForestModel.getFile().getPath());
 	}
 
 	

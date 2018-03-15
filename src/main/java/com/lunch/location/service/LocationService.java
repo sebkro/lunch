@@ -23,7 +23,8 @@ import com.lunch.location.services.parser.NlpParser;
 @Service
 public class LocationService {
 	
-	public static final long MENU_LOOKUP_INTERVAL_SECONDS = 60 * 60 * 3L;
+//	public static final long MENU_LOOKUP_INTERVAL_SECONDS = 60 * 60 * 3L;
+	public static final long MENU_LOOKUP_INTERVAL_SECONDS = 10L;
 	
 	@Autowired
 	private LocationRepository locationRepository;

@@ -11,18 +11,18 @@ import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Service;
 
 import edu.stanford.nlp.ling.TaggedWord;
+import lombok.AllArgsConstructor;
+import weka.classifiers.trees.RandomForest;
+import weka.core.Instance;
 
 @Service
+@AllArgsConstructor
 public class NlpParser {
 	
 	private PriceOrientatedParser parser;
-	
 	private MenuPosTagger posTagger;
-	
-	public NlpParser(PriceOrientatedParser parser, MenuPosTagger posTagger) {
-		this.parser = parser;
-		this.posTagger = posTagger;
-	}
+	private RandomForest randomForest;
+	private MenuToRandomTreeInput menuToRandomTreeInput;
 
 
 	public List<Menu> getMenus(String url) {
@@ -35,10 +35,10 @@ public class NlpParser {
 	
 	public Optional<Menu> map(Pair<Element, List<Element>> elem) {
 		String text = elem.getValue1().stream()
-				.filter(prevElem -> shouldAddElement(prevElem))
+				.filter(prevElem -> shouldAddPrevElement(prevElem))
 				.map(Element::text)
 				.reduce("", String::concat);
-		if (shouldAddElement(elem.getValue0())) {
+		if (shouldAddRootElement(elem.getValue0())) {
 			text += " " + elem.getValue0().text();
 		}
 		if (StringUtils.isBlank(text)) {
@@ -53,16 +53,26 @@ public class NlpParser {
 		}
 	}
 	
-	public boolean shouldAddElement(Element elem) {
+	public boolean shouldAddRootElement(Element elem) {
+		String toClassify = elem.text();
+		Instance instanceToClassizy = menuToRandomTreeInput.convert(toClassify);
+		try {
+			double[] result = randomForest.distributionForInstance(instanceToClassizy);
+			return result[0] > result[1];
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	public boolean shouldAddPrevElement(Element elem) {
 		List<List<TaggedWord>> tagged = posTagger.posTag(elem.text());
 		Map<String, Long> taggedCount = tagged.stream().flatMap(sentence -> sentence.stream())
 			.map(TaggedWord::tag)
 			.collect(Collectors.groupingBy((String s) -> s, Collectors.counting()));
 		double totalWords = (double) taggedCount.values().stream().collect(Collectors.counting());
-		double nnWords = (double) taggedCount.getOrDefault("NN", 0L); 
-		double neWords = (double) taggedCount.getOrDefault("NE", 0L); 
-		double adjdWords = (double) taggedCount.getOrDefault("ADJD", 0L); 
+		double vvFinWords = (double) taggedCount.getOrDefault("VVFIN", 0L); 
+		double vvImp = (double) taggedCount.getOrDefault("VVIMP", 0L); 
 		
-		return (nnWords + neWords) / totalWords > 0.5;
+		return vvFinWords + vvImp <= 0;
 	}
 }
