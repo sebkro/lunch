@@ -6,8 +6,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.javatuples.Pair;
-import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Service;
 
 import edu.stanford.nlp.ling.TaggedWord;
@@ -33,18 +31,17 @@ public class NlpParser {
 			.collect(Collectors.toList());
 	}
 	
-	public Optional<Menu> map(Pair<Element, List<Element>> elem) {
-		String text = elem.getValue1().stream()
+	public Optional<Menu> map(MenuCandidate elem) {
+		String text = elem.getPrevElements().stream()
 				.filter(prevElem -> shouldAddPrevElement(prevElem))
-				.map(Element::text)
 				.reduce("", String::concat);
-		if (shouldAddRootElement(elem.getValue0())) {
-			text += " " + elem.getValue0().text();
+		if (shouldAddRootElement(elem.getRootElement())) {
+			text += " " + elem.getRootElement();
 		}
 		if (StringUtils.isBlank(text)) {
 			return Optional.empty();
 		} else {
-			List<String> prices = parser.getPrices(elem.getValue0());
+			List<String> prices = parser.getPrices(elem.getRootElement());
 			if (prices.size() == 1) {
 				text = PriceOrientatedParser.pricePattern.matcher(text).replaceAll("").replaceAll("€", "").trim();
 			}
@@ -53,9 +50,8 @@ public class NlpParser {
 		}
 	}
 	
-	public boolean shouldAddRootElement(Element elem) {
-		String toClassify = elem.text();
-		Instance instanceToClassizy = menuToRandomTreeInput.convert(toClassify);
+	public boolean shouldAddRootElement(String elem) {
+		Instance instanceToClassizy = menuToRandomTreeInput.convert(elem);
 		try {
 			double[] result = randomForest.distributionForInstance(instanceToClassizy);
 			return result[0] > result[1];
@@ -64,12 +60,11 @@ public class NlpParser {
 		}
 	}
 	
-	public boolean shouldAddPrevElement(Element elem) {
-		List<List<TaggedWord>> tagged = posTagger.posTag(elem.text());
+	public boolean shouldAddPrevElement(String elem) {
+		List<List<TaggedWord>> tagged = posTagger.posTag(elem);
 		Map<String, Long> taggedCount = tagged.stream().flatMap(sentence -> sentence.stream())
 			.map(TaggedWord::tag)
 			.collect(Collectors.groupingBy((String s) -> s, Collectors.counting()));
-		double totalWords = (double) taggedCount.values().stream().collect(Collectors.counting());
 		double vvFinWords = (double) taggedCount.getOrDefault("VVFIN", 0L); 
 		double vvImp = (double) taggedCount.getOrDefault("VVIMP", 0L); 
 		
