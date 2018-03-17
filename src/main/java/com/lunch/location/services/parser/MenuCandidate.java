@@ -13,5 +13,6 @@ public class MenuCandidate {
 	
 	private String rootElement;
 	private List<String> prevElements;
+	private List<String> nextElements;
 
 }

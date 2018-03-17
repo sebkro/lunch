@@ -20,7 +20,7 @@ public class NlpParser {
 	private PriceOrientatedParser parser;
 	private MenuPosTagger posTagger;
 	private RandomForest randomForest;
-	private MenuToRandomTreeInput menuToRandomTreeInput;
+	private MenuRootElementToRandomTreeInput menuToRandomTreeInput;
 
 
 	public List<Menu> getMenus(String url) {

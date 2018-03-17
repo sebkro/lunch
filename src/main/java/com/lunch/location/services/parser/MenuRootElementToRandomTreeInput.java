@@ -18,11 +18,11 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 @Service
-public class MenuToRandomTreeInput {
+public class MenuRootElementToRandomTreeInput {
 	
 	private MenuPosTagger tagger;
 	
-	public MenuToRandomTreeInput(MenuPosTagger tagger) {
+	public MenuRootElementToRandomTreeInput(MenuPosTagger tagger) {
 		this.tagger = tagger;
 	}
 	

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class PriceOrientatedParser {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(PriceFocusedParser.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PriceOrientatedParser.class);
 
 	public static final Pattern pricePattern = Pattern.compile("\\d{1,2}[.,]\\d{1,2}([^\\.\\d]|$)");
 
@@ -38,24 +38,28 @@ public class PriceOrientatedParser {
 	
 	private MenuCandidate toMenu(Element priceElement) {
 		Element maxParent = getMaxParent(priceElement);
-		List<String> previousElements = getPreviousNonEmptyElement(maxParent).stream()
-				.map(Element::text)
-				.collect(Collectors.toList());
-		return new MenuCandidate(maxParent.text(), previousElements);
+		List<String> previousElements = getPreviousNonEmptyElement(maxParent);
+		List<String> nextElements = getNextNonEmptyElement(maxParent);
+		
+		return new MenuCandidate(maxParent.text(), previousElements, nextElements);
 	}
 
-	private List<Element> getPreviousNonEmptyElement(Element e) {
+	private List<String> getPreviousNonEmptyElement(Element e) {
 		return findSiblingsNonEmptyElement(e, elem -> elem.previousElementSibling());
 	}
 
-	private List<Element> findSiblingsNonEmptyElement(Element start, Function<Element, Element> traverser) {
-		List<Element> result = new ArrayList<>();
+	private List<String> getNextNonEmptyElement(Element e) {
+		return findSiblingsNonEmptyElement(e, elem -> elem.nextElementSibling());
+	}
+
+	private List<String> findSiblingsNonEmptyElement(Element start, Function<Element, Element> traverser) {
+		List<String> result = new ArrayList<>();
 		Element current = null;
 		Element next = traverser.apply(start);
 		while (next != null && countPrices(next) == 0) {
 			current = next;
 			if (StringUtils.isNotBlank(current.text())) {
-				result.add(current);
+				result.add(current.text());
 			}
 			next = traverser.apply(current);
 		}
