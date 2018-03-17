@@ -1,4 +1,4 @@
-package com.lunch.location.parser;
+package com.lunch.location.parser.nlp;
 
 import java.util.Map;
 import java.util.Set;
@@ -8,9 +8,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Sets;
-import com.lunch.location.services.parser.FoodListService;
-import com.lunch.location.services.parser.WordListSimilarityCalculator;
-import com.lunch.location.services.parser.WordListSimilarityCalculator.StringDistanceMetric;
+import com.lunch.location.services.parser.nlp.FoodListService;
+import com.lunch.location.services.parser.nlp.WordListSimilarityCalculator;
+import com.lunch.location.services.parser.nlp.WordListSimilarityCalculator.StringDistanceMetric;
 
 
 public class FoodListServiceTest {

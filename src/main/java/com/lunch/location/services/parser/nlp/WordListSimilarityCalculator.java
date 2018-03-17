@@ -1,4 +1,4 @@
-package com.lunch.location.services.parser;
+package com.lunch.location.services.parser.nlp;
 
 import java.util.ArrayList;
 import java.util.HashMap;

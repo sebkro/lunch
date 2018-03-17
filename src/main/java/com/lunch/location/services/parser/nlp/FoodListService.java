@@ -1,27 +1,23 @@
-package com.lunch.location.services.parser;
+package com.lunch.location.services.parser.nlp;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.lunch.location.services.parser.WordListSimilarityCalculator.StringDistanceMetric;
+import org.springframework.stereotype.Service;
 
-import info.debatty.java.stringsimilarity.MetricLCS;
-import info.debatty.java.stringsimilarity.NormalizedLevenshtein;
+import com.lunch.location.services.parser.nlp.WordListSimilarityCalculator.StringDistanceMetric;
 
+@Service
 public class FoodListService {
 	
 	private Set<String> food;
 	private WordListSimilarityCalculator similarityCalculator;
-	
-	private NormalizedLevenshtein normalizedLevenshtein = new NormalizedLevenshtein();
-	private MetricLCS metricLcs = new MetricLCS();
 	
 	public FoodListService(List<Path> foodlistPathes, WordListSimilarityCalculator similarityCalculator) throws IOException {
 		this.similarityCalculator = similarityCalculator;

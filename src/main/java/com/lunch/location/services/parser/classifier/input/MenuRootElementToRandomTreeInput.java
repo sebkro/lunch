@@ -1,4 +1,4 @@
-package com.lunch.location.services.parser;
+package com.lunch.location.services.parser.classifier.input;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +10,7 @@ import org.javatuples.Pair;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
+import com.lunch.location.services.parser.MenuPosTagger;
 
 import edu.stanford.nlp.ling.TaggedWord;
 import weka.core.Attribute;

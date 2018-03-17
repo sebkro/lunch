@@ -11,7 +11,7 @@ import org.javatuples.Pair;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lunch.location.services.parser.MenuCandidate;
 import com.lunch.location.services.parser.MenuPosTagger;
-import com.lunch.location.services.parser.MenuRootElementToRandomTreeInput;
+import com.lunch.location.services.parser.classifier.input.MenuRootElementToRandomTreeInput;
 
 import weka.classifiers.Evaluation;
 import weka.classifiers.trees.RandomForest;

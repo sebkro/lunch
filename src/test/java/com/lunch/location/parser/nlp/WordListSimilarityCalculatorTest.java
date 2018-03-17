@@ -1,4 +1,4 @@
-package com.lunch.location.parser;
+package com.lunch.location.parser.nlp;
 
 import java.util.List;
 import java.util.Map;
@@ -8,8 +8,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.google.common.collect.Sets;
-import com.lunch.location.services.parser.WordListSimilarityCalculator;
-import com.lunch.location.services.parser.WordListSimilarityCalculator.StringDistanceMetric;
+import com.lunch.location.services.parser.nlp.WordListSimilarityCalculator;
+import com.lunch.location.services.parser.nlp.WordListSimilarityCalculator.StringDistanceMetric;
 
 
 public class WordListSimilarityCalculatorTest {
