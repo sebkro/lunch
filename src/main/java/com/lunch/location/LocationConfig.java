@@ -9,6 +9,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import com.lunch.location.services.parser.MenuPosTagger;
+import com.lunch.location.services.parser.nlp.StopWordsService;
 
 import weka.classifiers.trees.RandomForest;
 import weka.core.SerializationHelper;
@@ -28,6 +29,18 @@ public class LocationConfig {
 
 	@Value("classpath:randomForest.model")
 	private Resource randomForestModel;
+
+	@Value("classpath:essenTriken.txt")
+	private Resource wordsEssenTrinken;
+
+	@Value("classpath:getraenke.txt")
+	private Resource wordsGetraenke;
+
+	@Value("classpath:gemuese.txt")
+	private Resource wordsGemuese;
+
+	@Value("classpath:stopwords.txt")
+	private Resource stopWords;
 	
 	@Bean
 	public MenuPosTagger menuPosTagger() throws IOException {
@@ -37,6 +50,11 @@ public class LocationConfig {
 	@Bean
 	public RandomForest randomForest() throws Exception {
 		return (RandomForest) SerializationHelper.read(randomForestModel.getFile().getPath());
+	}
+	
+	@Bean
+	public StopWordsService stopWordsService() throws IOException {
+		return new StopWordsService(stopWords.getFile().toPath());
 	}
 
 	

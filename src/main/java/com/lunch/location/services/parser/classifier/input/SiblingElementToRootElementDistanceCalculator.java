@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.stereotype.Service;
-
 import com.lunch.location.services.parser.nlp.StopWordsService;
 import com.lunch.location.services.parser.nlp.WordListSimilarityCalculator;
 import com.lunch.location.services.parser.nlp.WordListSimilarityCalculator.StringDistanceMetric;
@@ -14,7 +12,6 @@ import com.lunch.location.services.parser.nlp.WordListSimilarityCalculator.Strin
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-@Service
 public class SiblingElementToRootElementDistanceCalculator {
 
 	private StopWordsService stopWordsService;

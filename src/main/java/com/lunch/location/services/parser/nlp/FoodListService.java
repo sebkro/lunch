@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.lunch.location.services.parser.nlp.WordListSimilarityCalculator.StringDistanceMetric;
 
-@Service
 public class FoodListService {
 	
 	private Set<String> food;
