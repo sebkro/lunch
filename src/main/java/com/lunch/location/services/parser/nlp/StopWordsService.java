@@ -25,7 +25,7 @@ public class StopWordsService {
 	}
 
 	public boolean isNotStopWord(String word) {
-		return !isNotStopWord(word);
+		return !isStopWord(word);
 	}
 	
 	

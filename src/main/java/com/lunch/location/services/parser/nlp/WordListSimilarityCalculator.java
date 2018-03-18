@@ -7,9 +7,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
+
 import info.debatty.java.stringsimilarity.MetricLCS;
 import info.debatty.java.stringsimilarity.NormalizedLevenshtein;
 
+@Service
 public class WordListSimilarityCalculator {
 	
 	public enum StringDistanceMetric {

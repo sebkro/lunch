@@ -56,7 +56,7 @@ public class SiblingElementToRootElementDistanceCalculatorTest {
 		distanceResult.put(StringDistanceMetric.NormalizedLevenshtein, Lists.newArrayList(0.0, 0.0, 0.4, 0.7, 0.8, 0.85, 0.9));
 		
 		when(similarityCalculator.getBestMetricsFor(nonStopWordListSiblingsElement,
-				nonStopWordListRootElement, StringDistanceMetric.NormalizedLevenshtein)).thenReturn(distanceResult);
+				nonStopWordListRootElement, SiblingElementToRootElementDistanceCalculator.DISTANCE_METRICS)).thenReturn(distanceResult);
 		
 		//when
 		Map<StringDistanceMetric, List<Double>> result = calculator.findBestMatchingWords(siblingsElement, rootElement);

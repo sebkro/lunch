@@ -13,6 +13,8 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class SiblingElementToRootElementDistanceCalculator {
+	
+	public static final StringDistanceMetric[] DISTANCE_METRICS = {StringDistanceMetric.NormalizedLevenshtein, StringDistanceMetric.MetricLCS};
 
 	private StopWordsService stopWordsService;
 	private WordListSimilarityCalculator wordListSimilarityCalculator;
@@ -20,7 +22,7 @@ public class SiblingElementToRootElementDistanceCalculator {
 	public Map<StringDistanceMetric, List<Double>> findBestMatchingWords(List<String> siblingsElements, List<String> rootElements) {
 		Set<String> siblingNotStopWords = getNonStopWords(siblingsElements);
 		Set<String> rootNotStopWords = getNonStopWords(rootElements);
-		return wordListSimilarityCalculator.getBestMetricsFor(siblingNotStopWords, rootNotStopWords, StringDistanceMetric.NormalizedLevenshtein);
+		return wordListSimilarityCalculator.getBestMetricsFor(siblingNotStopWords, rootNotStopWords, DISTANCE_METRICS);
 	}
 
 	private Set<String> getNonStopWords(List<String> words) {
