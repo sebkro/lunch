@@ -59,7 +59,7 @@ public class MenuRootElementClassifierTrainer {
 		
 		RandomForest forest=new RandomForest();
 		
-		forest.setNumIterations(1000);
+		forest.setNumIterations(2000);
 		
 		
 		/** */
@@ -84,7 +84,10 @@ public class MenuRootElementClassifierTrainer {
 		RandomForest cls = (RandomForest) SerializationHelper.read("/Users/kromes/Desktop/randomForest.model");
 		
 		String toClassify = "\"Dein Salat, Deine Bowl\" Für den Grundpreis von 5,90€ erhalten Sie Eine Basis Ihrer Wahl inklusive Zutaten Ihrer Wahl im Wert von 2,00€ + Dressing Ihrer Wahl + Brot. Danach können Sie Ihren Salat / Ihre Bowl zusätzlich durch kalte oder warme Zutaten erweitern. Stellen Sie sich Ihr Wunschessen in 3 Schritten zusammen. Schritt 1: Basis wählen Salatmix (5,90€) - Romana Salat (5,90€) - Babyspinat (6,80€) Reis (5,90€) - Quinoa (5,90€) Schritt 2: Zutaten wählen (2,00€ inklusive, weitere Zutaten gegen Aufpreis) 0,5€ 1,00€ 1,50€ Die einzelnen Zutaten pro Preiskategorie sind in unserer Salatbar vor Ort in Hamburg ersichtlich. Sonstige Toppings Huhn (warm) / Ziegenkäse / Falafel 2,50€ Roastbeef / Lachs 2,90€ Croutons, Pinien-, Sonnenblumenkerne, Walnüsse, Sesam, Chia-Samen / jeweils 0,50€ Schritt 3: Dressing wählen Green Lovers (6 Kräuter, Zitronensaft, Olivenöl) Balsamico (Die Sicherheitsvariante) Caesar‘s (Der Klassiker) Dill-Joghurt (Joghurt, Saure Sahne, Dill, Zitronensaft) French (Mayonnaise, Petersilie, Zitronen- und Orangensaft) Rucola-Senf (passt fast immer, auch gut zum Couscous) Soja-Sesam (Sesamöl, Soyasauce, Ingwer, Zitronengras) Orange-Honig Dressing NEU Ranch Dressing NEU Wechselndes Spezial-Dressing (lass Dich überraschen) Alle Dressings wurden nach eigenen Hausrezepten entwickelt und werden von uns selber hergestellt.";
+		double start = System.currentTimeMillis();
 		Instance instanceToClassizy = toRandomTreeInput.convert(toClassify);
+		double end = System.currentTimeMillis();
+		System.out.println("took: " + (end - start));
 		double[] result = cls.distributionForInstance(instanceToClassizy);
 		Arrays.stream(result).forEach(System.out::println);
 

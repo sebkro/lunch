@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.javatuples.Pair;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,8 @@ import weka.core.Instances;
 @Service
 public class MenuRootElementToRandomTreeInput extends PosTaggedToInput {
 	
-	public static final List<String> TAGS = Lists.newArrayList("NN", "XY", "ART", "ADJA", "ADJD", "PRF", "VVINF", "PPOSAT", "VVIMP", "PPER", "$.", "$, "
-			+ "", "VMFIN", "CARD", "ADV", "PTKVZ", "FM", "TRUNC", "PROAV", "VVFIN", "PIDAT", "VVPP", "KON", "APPR", "NE", "VAFIN");
+	public static final List<String> TAGS = Lists.newArrayList("NN", "NE", "ART", "ADJA", "ADJD", "$.", "$, ", "FM", "KON", "XY");
+	public static final List<String> TAG_GROUP_VERBS = Lists.newArrayList("VVFIN", "VAFIN", "VMFIN", "VVINF", "VAINF", "VMINF", "VVIMP", "VAIMP", "VVPP", "VAPP", "VMPP", "VVIZU");
 	
 	public static final List<String> PRE_TAG_ATTRIBUTES = Lists.newArrayList("words", "sentences");
 	
@@ -47,15 +48,19 @@ public class MenuRootElementToRandomTreeInput extends PosTaggedToInput {
 		ArrayList<Attribute> attributes = new ArrayList<>();
 		attributes.add(new Attribute(PRE_TAG_ATTRIBUTES.get(0)));
 		attributes.add(new Attribute(PRE_TAG_ATTRIBUTES.get(1)));
-		TAGS.forEach(elem -> attributes.add(new Attribute(elem)));
+		getTagGroupNames().forEach(elem -> attributes.add(new Attribute(elem)));
 		attributes.add(new Attribute("classification", Arrays.asList("POSITIVE", "NEGATIVE")));
 		return attributes;
 		
 	}
 
 	@Override
-	protected List<String> getTags() {
-		return TAGS;
+	protected List<Pair<String, List<String>>> getTagGroups() {
+		List<Pair<String, List<String>>> result = TAGS.stream()
+				.map(elem -> new Pair<String, List<String>>(elem, Lists.newArrayList(elem)))
+				.collect(Collectors.toList());
+		result.add(new Pair<String, List<String>>("V", TAG_GROUP_VERBS));
+		return result;
 	}
 	
 }

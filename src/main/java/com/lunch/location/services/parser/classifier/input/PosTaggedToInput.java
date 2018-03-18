@@ -31,16 +31,35 @@ public abstract class PosTaggedToInput extends ToRandomTreeInput {
 	
 	protected void setTagAttributes(ArrayList<Attribute> attributes, Pair<Map<String, Long>, Integer> postaggedAndCounted,
 			long totalWords, Instance instance, int prevAttributes) {
+		List<Pair<String, List<String>>> tagGroups = getTagGroups();
 		for (int i = prevAttributes; i < attributes.size() - 1; i++) {
-			instance.setValue(attributes.get(i), getCount(postaggedAndCounted.getValue0(), attributes, i, totalWords));
+			String attrName = attributes.get(i).name();
+			List<String> tagsForTagGroup = getValueFor(tagGroups, attrName);
+			instance.setValue(attributes.get(i), getCount(postaggedAndCounted.getValue0(), tagsForTagGroup, totalWords));
 		}
 	}
 	
-
-	private double getCount(Map<String, Long> taggedCount, List<Attribute> attributes, int index, long totalWords) {
-		return ((double) taggedCount.getOrDefault(attributes.get(index).name(), 0L)) / totalWords;
+	private List<String> getValueFor(List<Pair<String, List<String>>> in, String key) {
+		return in.stream()
+				.filter(elem -> elem.getValue0().equals(key))
+				.findAny()
+				.map(elem -> elem.getValue1())
+				.orElse(new ArrayList<>());
 	}
 	
-	protected abstract List<String> getTags();
+	private double getCount(Map<String, Long> taggedCount, List<String> tagGroup, long totalWords) {
+		long count = tagGroup.stream()
+			.mapToLong(elem -> taggedCount.getOrDefault(elem, 0L))
+			.reduce(0L, (e1, e2) -> e1 + e2);
+		
+		return ((double) count) / totalWords;
+	}
+	
+	protected List<String> getTagGroupNames() {
+		return getTagGroups().stream().map(Pair::getValue0).collect(Collectors.toList());
+		
+	}
+	
+	protected abstract List<Pair<String, List<String>>> getTagGroups();
 
 }
