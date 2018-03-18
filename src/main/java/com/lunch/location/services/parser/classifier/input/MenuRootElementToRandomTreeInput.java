@@ -11,7 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
 import com.lunch.location.services.parser.MenuPosTagger;
+import com.lunch.location.services.parser.nlp.FoodListService;
+import com.lunch.location.services.parser.nlp.WordListSimilarityCalculator.StringDistanceMetric;
 
+import edu.stanford.nlp.ling.TaggedWord;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
@@ -25,22 +28,34 @@ public class MenuRootElementToRandomTreeInput extends PosTaggedToInput {
 	
 	public static final List<String> PRE_TAG_ATTRIBUTES = Lists.newArrayList("words", "sentences");
 	
-	public MenuRootElementToRandomTreeInput(MenuPosTagger tagger) {
+	private FoodListService foodlistService;
+	
+	public MenuRootElementToRandomTreeInput(MenuPosTagger tagger, FoodListService foodlistService) {
 		super(tagger);
+		this.foodlistService = foodlistService;
 	}
 	
 	@Override
 	public Instance convert(String menuRootElement, Instances dataset, ArrayList<Attribute> attributes) {
-		Pair<Map<String, Long>, Integer> postaggedAndCounted = postagAndCount(menuRootElement);
+		Pair<Map<String, Long>, List<List<TaggedWord>>> postaggedAndCounted = postagAndCount(menuRootElement);
 		long totalWords = postaggedAndCounted.getValue0().values().stream().reduce(0L, (e1, e2) -> e1 + e2);
-		long totalSentences = postaggedAndCounted.getValue1();
+		long totalSentences = postaggedAndCounted.getValue1().size();
 			
 		Instance instance = new DenseInstance(attributes.size());
 		instance.setValue(attributes.get(0), totalWords);
 		instance.setValue(attributes.get(1), totalSentences);
-		setTagAttributes(attributes, postaggedAndCounted, totalWords, instance, PRE_TAG_ATTRIBUTES.size());
+		setTagAttributes(attributes, postaggedAndCounted.getValue0(), totalWords, instance, PRE_TAG_ATTRIBUTES.size());
+		instance.setValue(attributes.get(attributes.size() - 2), findBestFoodValue(postaggedAndCounted.getValue1()));
 		instance.setValue(attributes.get(attributes.size() - 1), "POSITIVE");
 		return instance;
+	}
+
+	private double findBestFoodValue(List<List<TaggedWord>> words) {
+		return words.stream().flatMap(elem -> elem.stream())
+			.map(elem -> foodlistService.getBestMetricsFor(elem.word(), StringDistanceMetric.NormalizedLevenshtein))
+			.map(elem -> elem.get(StringDistanceMetric.NormalizedLevenshtein))
+			.reduce(Double.MAX_VALUE, (e1, e2) -> Double.min(e1, e2));
+		
 	}
 
 	@Override
@@ -49,6 +64,7 @@ public class MenuRootElementToRandomTreeInput extends PosTaggedToInput {
 		attributes.add(new Attribute(PRE_TAG_ATTRIBUTES.get(0)));
 		attributes.add(new Attribute(PRE_TAG_ATTRIBUTES.get(1)));
 		getTagGroupNames().forEach(elem -> attributes.add(new Attribute(elem)));
+		attributes.add(new Attribute("isFood"));
 		attributes.add(new Attribute("classification", Arrays.asList("POSITIVE", "NEGATIVE")));
 		return attributes;
 		

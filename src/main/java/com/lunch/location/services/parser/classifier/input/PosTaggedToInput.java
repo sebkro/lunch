@@ -21,21 +21,21 @@ public abstract class PosTaggedToInput extends ToRandomTreeInput {
 		this.tagger = tagger;
 	} 
 	
-	protected Pair<Map<String, Long>, Integer> postagAndCount(String element) {
+	protected Pair<Map<String, Long>, List<List<TaggedWord>>> postagAndCount(String element) {
 		List<List<TaggedWord>> tagged = tagger.posTag(element);
 		Map<String, Long> taggedCount = tagged.stream().flatMap(sentence -> sentence.stream())
 				.map(TaggedWord::tag)
 				.collect(Collectors.groupingBy((String s) -> s, Collectors.counting()));
-		return new Pair<Map<String,Long>, Integer>(taggedCount, tagged.size());
+		return new Pair<Map<String,Long>, List<List<TaggedWord>>>(taggedCount, tagged);
 	}
 	
-	protected void setTagAttributes(ArrayList<Attribute> attributes, Pair<Map<String, Long>, Integer> postaggedAndCounted,
+	protected void setTagAttributes(ArrayList<Attribute> attributes, Map<String, Long> posTagCount,
 			long totalWords, Instance instance, int prevAttributes) {
 		List<Pair<String, List<String>>> tagGroups = getTagGroups();
 		for (int i = prevAttributes; i < attributes.size() - 1; i++) {
 			String attrName = attributes.get(i).name();
 			List<String> tagsForTagGroup = getValueFor(tagGroups, attrName);
-			instance.setValue(attributes.get(i), getCount(postaggedAndCounted.getValue0(), tagsForTagGroup, totalWords));
+			instance.setValue(attributes.get(i), getCount(posTagCount, tagsForTagGroup, totalWords));
 		}
 	}
 	

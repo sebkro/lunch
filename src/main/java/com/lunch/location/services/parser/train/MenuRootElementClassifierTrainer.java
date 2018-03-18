@@ -2,6 +2,7 @@ package com.lunch.location.services.parser.train;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,9 +10,12 @@ import java.util.List;
 import org.javatuples.Pair;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.lunch.location.services.parser.MenuCandidate;
 import com.lunch.location.services.parser.MenuPosTagger;
 import com.lunch.location.services.parser.classifier.input.MenuRootElementToRandomTreeInput;
+import com.lunch.location.services.parser.nlp.FoodListService;
+import com.lunch.location.services.parser.nlp.WordListSimilarityCalculator;
 
 import weka.classifiers.Evaluation;
 import weka.classifiers.trees.RandomForest;
@@ -31,7 +35,20 @@ public class MenuRootElementClassifierTrainer {
 		List<String> lines = Files.readAllLines(file.toPath());
 //
 		MenuPosTagger tagger = new MenuPosTagger("/Users/kromes/Desktop/german-fast.tagger");
-		MenuRootElementToRandomTreeInput toRandomTreeInput = new MenuRootElementToRandomTreeInput(tagger);
+		
+		MenuRootElementClassifierTrainer trainer = new MenuRootElementClassifierTrainer();
+		ClassLoader classLoader = trainer.getClass().getClassLoader();
+		
+		File essenTrinken = new File(classLoader.getResource("foods/essenTrinken.txt").getFile());
+		File gemuese = new File(classLoader.getResource("foods/gemuese.txt").getFile());
+		File getraenke = new File(classLoader.getResource("foods/getraenke.txt").getFile());
+		List<Path> foodPathes = Lists.newArrayList(essenTrinken.toPath(), gemuese.toPath(), getraenke.toPath());
+		
+		WordListSimilarityCalculator similarityCalculator = new WordListSimilarityCalculator();
+		
+		FoodListService foodlistService = new FoodListService(foodPathes, similarityCalculator);
+		
+		MenuRootElementToRandomTreeInput toRandomTreeInput = new MenuRootElementToRandomTreeInput(tagger, foodlistService);
 		Pair<Instances, ArrayList<Attribute>> instancesAndAttributes = toRandomTreeInput.getInstances("menuData", lines.size() / 2);
 
 		Instances instances = instancesAndAttributes.getValue0();

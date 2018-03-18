@@ -3,7 +3,9 @@ package com.lunch.location.parser.classifier.input;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,6 +16,8 @@ import org.mockito.MockitoAnnotations;
 import com.google.common.collect.Lists;
 import com.lunch.location.services.parser.MenuPosTagger;
 import com.lunch.location.services.parser.classifier.input.MenuRootElementToRandomTreeInput;
+import com.lunch.location.services.parser.nlp.FoodListService;
+import com.lunch.location.services.parser.nlp.WordListSimilarityCalculator.StringDistanceMetric;
 
 import edu.stanford.nlp.ling.TaggedWord;
 import weka.core.Instance;
@@ -25,10 +29,13 @@ public class MenuRootElementToRadomTreeInputTest {
 	@Mock
 	private MenuPosTagger tagger;
 	
+	@Mock
+	private FoodListService foodlistService;
+	
 	@Before
 	public void init() {
 		MockitoAnnotations.initMocks(this);
-		toInput = new MenuRootElementToRandomTreeInput(tagger);
+		toInput = new MenuRootElementToRandomTreeInput(tagger, foodlistService);
 	}
 	
 	@Test
@@ -48,6 +55,21 @@ public class MenuRootElementToRadomTreeInputTest {
 		List<List<TaggedWord>> sentences = new ArrayList<>();
 		sentences.add(sentence);
 		when(tagger.posTag(theSentence)).thenReturn(sentences);
+		
+		Map<StringDistanceMetric, Double> distanceMap1 = new HashMap<>();
+		distanceMap1.put(StringDistanceMetric.NormalizedLevenshtein, 0.65);
+		Map<StringDistanceMetric, Double> distanceMap2 = new HashMap<>();
+		distanceMap2.put(StringDistanceMetric.NormalizedLevenshtein, 0.49);
+		Map<StringDistanceMetric, Double> distanceMap3 = new HashMap<>();
+		distanceMap3.put(StringDistanceMetric.NormalizedLevenshtein, 0.05);
+		when(foodlistService.getBestMetricsFor(w1.word(), StringDistanceMetric.NormalizedLevenshtein)).thenReturn(distanceMap1);
+		when(foodlistService.getBestMetricsFor(w2.word(), StringDistanceMetric.NormalizedLevenshtein)).thenReturn(distanceMap1);
+		when(foodlistService.getBestMetricsFor(w3.word(), StringDistanceMetric.NormalizedLevenshtein)).thenReturn(distanceMap1);
+		when(foodlistService.getBestMetricsFor(w4.word(), StringDistanceMetric.NormalizedLevenshtein)).thenReturn(distanceMap2);
+		when(foodlistService.getBestMetricsFor(w5.word(), StringDistanceMetric.NormalizedLevenshtein)).thenReturn(distanceMap2);
+		when(foodlistService.getBestMetricsFor(w6.word(), StringDistanceMetric.NormalizedLevenshtein)).thenReturn(distanceMap2);
+		when(foodlistService.getBestMetricsFor(w7.word(), StringDistanceMetric.NormalizedLevenshtein)).thenReturn(distanceMap3);
+		when(foodlistService.getBestMetricsFor(w8.word(), StringDistanceMetric.NormalizedLevenshtein)).thenReturn(distanceMap1);
 		
 		//when
 		Instance result = toInput.convert(theSentence);
@@ -76,6 +98,9 @@ public class MenuRootElementToRadomTreeInputTest {
 
 		Assert.assertEquals(result.attribute(12).name(), "V");
 		Assert.assertEquals(result.value(12), 3.0 / 8.0, 0.0001);
+
+		Assert.assertEquals(result.attribute(13).name(), "isFood");
+		Assert.assertEquals(result.value(13), 0.05, 0.0001);
 	}
 
 }
