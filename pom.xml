@@ -27,6 +27,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.cgi</groupId>
+			<artifactId>nlpprimer_2.12</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cloud-connectors</artifactId>
 		</dependency>
@@ -108,6 +113,14 @@
 		</dependency>
 	</dependencies>
 
+	<repositories>
+		<repository>
+			<id>smaf.nexus.project.javab.snapshots</id>
+			<name>Smaf Nexus Release Repository for JAVAB</name>
+			<url>http://smaf.de.cgi.com/nexus/content/repositories/cgi-javab-snapshots/</url>
+		</repository>
+	</repositories>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -128,6 +141,13 @@
 	</dependencyManagement>
 
 	<build>
+		<!--<extensions>-->
+			<!--<extension>-->
+				<!--<groupId>org.apache.maven.wagon</groupId>-->
+				<!--<artifactId>wagon-webdav-jackrabbit</artifactId>-->
+				<!--<version>2.2</version>-->
+			<!--</extension>-->
+		<!--</extensions>-->
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
