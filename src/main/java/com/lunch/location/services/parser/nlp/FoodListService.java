@@ -3,6 +3,8 @@ package com.lunch.location.services.parser.nlp;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +39,18 @@ public class FoodListService {
 	
 	public Map<StringDistanceMetric, Double> getBestMetricsFor(String elem, StringDistanceMetric... metricsToApply) {
 		return similarityCalculator.getBestMetricsFor(elem, food, metricsToApply);
+	}
+
+	public Map<StringDistanceMetric, List<Double>> getBestMetricsFor(List<String> elems, StringDistanceMetric... metricsToApply) {
+		Map<StringDistanceMetric, List<Double>> result = new HashMap<>();
+		for (StringDistanceMetric metric : metricsToApply) {
+			List<Double> distances = elems.stream()
+					.map(elem -> getBestMetricsFor(elem, metric).get(metric))
+					.collect(Collectors.toList());
+			Collections.sort(distances);
+			result.put(metric, distances);
+		}
+		return  result;
 	}
 	
 	
