@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.javatuples.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Point;
@@ -25,6 +27,8 @@ public class LocationService {
 	
 //	public static final long MENU_LOOKUP_INTERVAL_SECONDS = 60 * 60 * 3L;
 	public static final long MENU_LOOKUP_INTERVAL_SECONDS = 10L;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(LocationService.class);
 	
 	@Autowired
 	private LocationRepository locationRepository;
@@ -38,6 +42,8 @@ public class LocationService {
 	public List<Pair<Location, List<Menu>>> getLocations(double latitude, double longitude, Distance distance) {
 		ZonedDateTime currentDate = ZonedDateTime.now( ZoneOffset.UTC );
 		long timestampSeconds = currentDate.toInstant().getEpochSecond();
+		List<Location> locations = locationRepository.findByGeoLocationNear(new Point(latitude, longitude), distance);
+		LOGGER.info("Found '{}' locations", locations.size());
 		return locationRepository.findByGeoLocationNear(new Point(latitude, longitude), distance).parallelStream()
 				.map(elem -> new Pair<Location, List<Menu>>(elem, getMenus(elem, timestampSeconds)))
 				.collect(Collectors.toList());

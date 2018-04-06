@@ -5,6 +5,6 @@
 
 export const environment = {
   production: false,
-  locationServiceUrl: 'http://localhost:9001'
+  locationServiceUrl: 'http://localhost:8080'
 
 };
