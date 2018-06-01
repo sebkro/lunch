@@ -11,6 +11,8 @@ import { LocationService } from './services/location/location.service';
 import { HttpModule } from '@angular/http';
 import { MatSliderModule } from '@angular/material';
 import { SpinLoaderComponent } from './components/shared/spin-loader/spin-loader.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ import { SpinLoaderComponent } from './components/shared/spin-loader/spin-loader
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyAZuu3uYIFrFyOQOrOpPYxj8InKJodPDjQ',
       libraries: ['places']
-    })
+    }),
+    environment.production ? ServiceWorkerModule.register('ngsw-worker.js') : []
   ],
   exports : [
     SpinLoaderComponent
