@@ -21,8 +21,11 @@ export class FilterComponent implements OnInit {
   address: string;
   latitude: number;
   longitude: number;
-  distanceM: number;
+  distanceM: string;
   zoom: number;
+  onlineState: string;
+  userAgent: string;
+  supportsGeo: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -33,18 +36,33 @@ export class FilterComponent implements OnInit {
 
   ngOnInit() {
     this.zoom = 12;
-    this.latitude = 53.542733;
-    this.longitude = 9.986065;
-    this.address = 'Am Sandtorkai 72-73, 20457 Hamburg, Deutschland';
-    this.distanceM = 1000;
+    this.address = '';
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        success => {
+          this.latitude = success.coords.latitude;
+          this.longitude = success.coords.longitude;
+          this.getGeoLocation(this.latitude, this.longitude);
+        },
+       error => {
+        this.latitude = 53.542733;
+        this.longitude = 9.986065;
+        this.address = 'Am Sandtorkai 72-73, 20457 Hamburg, Deutschland';
+       });
+    }
+    this.distanceM = '1000';
 
     this.createForm();
-    //this.setCurrentPosition();
+    this.userAgent = navigator.userAgent;
+    this.onlineState = navigator.onLine ? 'online' : 'offline';
+    this.supportsGeo = navigator.geolocation ? 'true' : 'false';
   }
 
   filterButtonClicked($event) {
     if (this.filterForm.valid) {
-      this.notifyParent.emit(new Point(this.latitude, this.longitude, this.filterForm.controls['distance'].value));
+      console.log(this.filterForm.controls['distanceM'].value);
+      this.notifyParent.emit(new Point(this.latitude, this.longitude, this.filterForm.controls['distanceM'].value));
     } else {
       this.error = true;
     }
@@ -57,25 +75,21 @@ export class FilterComponent implements OnInit {
       });
       autocomplete.addListener('place_changed', () => {
         this.ngZone.run(() => {
-          //get the place result
+          // get the place result
           const place: google.maps.places.PlaceResult = autocomplete.getPlace();
 
-          //verify result
+          // verify result
           if (place.geometry === undefined || place.geometry === null) {
             return;
           }
 
-          //set latitude, longitude and zoom
+          // set latitude, longitude and zoom
           this.latitude = place.geometry.location.lat();
           this.longitude = place.geometry.location.lng();
           this.zoom = 12;
         });
       });
     });
-  }
-
-  distanceChanged($event) {
-    this.distanceM = $event.value * 1000;
   }
 
   placeMarker($event) {
@@ -99,28 +113,26 @@ export class FilterComponent implements OnInit {
 
   private createForm() {
     this.filterForm = this.formBuilder.group({
-      address: ['Am Sandtorkai 72-73, 20457 Hamburg, Deutschland', Validators.required],
-      distance: ['1', Validators.required]
+      address: [this.address, Validators.required],
+      distanceM: [this.distanceM, Validators.required]
     });
   }
 
   private getGeoLocation(latitude: number, longitude: number) {
-    if (navigator.geolocation) {
-      this.ngZone.run(() => {
-        const geocoder = new google.maps.Geocoder();
-        const latlng = new google.maps.LatLng(latitude, longitude);
-        const request = { location: latlng };
-        geocoder.geocode(request, (results, status) => {
-          if (status === google.maps.GeocoderStatus.OK) {
-            if (results[0] != null) {
-              this.address = results[0].formatted_address;
-              this.filterForm.controls['address'].setValue(this.address);
-            } else {
-              this.error = true;
-            }
+    this.ngZone.run(() => {
+      const geocoder = new google.maps.Geocoder();
+      const latlng = new google.maps.LatLng(latitude, longitude);
+      const request = { location: latlng };
+      geocoder.geocode(request, (results, status) => {
+        if (status === google.maps.GeocoderStatus.OK) {
+          if (results[0] != null) {
+            this.address = results[0].formatted_address;
+            this.filterForm.controls['address'].setValue(this.address);
+          } else {
+            this.error = true;
           }
-        });
+        }
       });
-    }
+    });
   }
 }
