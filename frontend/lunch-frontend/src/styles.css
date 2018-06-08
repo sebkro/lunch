@@ -2,10 +2,6 @@ body {
   padding-top: 54px;
 }
 
-agm-map {
-  height: 300px;
-}
-
 .form-group {
     width: 100%;
 }
@@ -37,7 +33,6 @@ body {
 }
 /*-------------------------------------------------- */
 .first-row {
-  background-image : url('/assets/background-3007395_960_720.jpg');
   background-repeat: no-repeat;
   background-size : cover;
   box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(78, 78, 78, 0.59);
@@ -66,11 +61,19 @@ body {
   color: white
 }
 
+body {
+  padding-top: 56px;
+}
+.first-row {
+  background-image : url('/assets/background-3007395_960_720.jpg');
+}
 
-
-@media (min-width: 992px) {
+@media (max-width: 991px) {
   body {
-    padding-top: 56px;
+    padding-top: 0px;
+  }
+  .first-row {
+    background-image : url('/assets/background-3007395_960_720_mobile.jpg');
   }
 }
 
