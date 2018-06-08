@@ -1,9 +1,8 @@
 import { Component, OnInit, Output, EventEmitter, NgZone, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { } from 'googlemaps';
-import { MapsAPILoader } from '@agm/core';
 import { Point } from './../data-model';
 import { GoogleService } from '../../services/google/google.service';
+import { } from '@types/googlemaps';
 
 @Component({
   selector: 'app-filter',
@@ -16,6 +15,9 @@ export class FilterComponent implements OnInit {
 
   @ViewChild('search') public searchElementRef: ElementRef;
 
+  @ViewChild('gmap') gmapElement: any;
+  map: google.maps.Map;
+
   filterForm: FormGroup;
   error = false;
   address: string;
@@ -26,10 +28,11 @@ export class FilterComponent implements OnInit {
   onlineState: string;
   userAgent: string;
   supportsGeo: string;
+  showMap: false;
+  try = 0;
 
   constructor(
     private formBuilder: FormBuilder,
-    private mapsAPILoader: MapsAPILoader,
     private ngZone: NgZone,
     private googleService: GoogleService
   ) { }
@@ -38,25 +41,36 @@ export class FilterComponent implements OnInit {
     this.zoom = 12;
     this.address = '';
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        success => {
-          this.latitude = success.coords.latitude;
-          this.longitude = success.coords.longitude;
-          this.getGeoLocation(this.latitude, this.longitude);
-        },
-       error => {
-        this.latitude = 53.542733;
-        this.longitude = 9.986065;
-        this.address = 'Am Sandtorkai 72-73, 20457 Hamburg, Deutschland';
-       });
+    if (this.showMap) {
+      const mapProp = {
+        center: new google.maps.LatLng(18.5793, 73.8143),
+        zoom: 12,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+      this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
     }
+
+
+    // if (navigator.geolocation) {
+    //   navigator.geolocation.getCurrentPosition(
+    //     success => {
+    //       this.latitude = success.coords.latitude;
+    //       this.longitude = success.coords.longitude;
+    //       this.getGeoLocation(this.latitude, this.longitude);
+    //     },
+    //    error => {
+    //     this.latitude = 53.542733;
+    //     this.longitude = 9.986065;
+    //     this.address = 'Am Sandtorkai 72-73, 20457 Hamburg, Deutschland';
+    //    });
+    // }
     this.distanceM = '1000';
 
     this.createForm();
     this.userAgent = navigator.userAgent;
     this.onlineState = navigator.onLine ? 'online' : 'offline';
     this.supportsGeo = navigator.geolocation ? 'true' : 'false';
+    this.installAutocomplete();
   }
 
   filterButtonClicked($event) {
@@ -69,27 +83,8 @@ export class FilterComponent implements OnInit {
   }
 
   addressChanged() {
-    this.mapsAPILoader.load().then(() => {
-      const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
-        types: ['address']
-      });
-      autocomplete.addListener('place_changed', () => {
-        this.ngZone.run(() => {
-          // get the place result
-          const place: google.maps.places.PlaceResult = autocomplete.getPlace();
+    const input = this.filterForm.controls['address'].value;
 
-          // verify result
-          if (place.geometry === undefined || place.geometry === null) {
-            return;
-          }
-
-          // set latitude, longitude and zoom
-          this.latitude = place.geometry.location.lat();
-          this.longitude = place.geometry.location.lng();
-          this.zoom = 12;
-        });
-      });
-    });
   }
 
   placeMarker($event) {
@@ -116,6 +111,18 @@ export class FilterComponent implements OnInit {
       address: [this.address, Validators.required],
       distanceM: [this.distanceM, Validators.required]
     });
+  }
+
+  private installAutocomplete() {
+    if (this.try < 5 && typeof google !== 'undefined' && typeof google.maps !== 'undefined' && typeof google.maps.places !== 'undefined') {
+      const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
+        types: ['address']
+      });
+    } else {
+      this.try++;
+      console.log("Install try " + this.try);
+      setTimeout(() => this.installAutocomplete(), 1000);
+    }
   }
 
   private getGeoLocation(latitude: number, longitude: number) {
