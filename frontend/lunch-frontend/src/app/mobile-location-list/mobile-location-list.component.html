@@ -1,0 +1,31 @@
+<div *ngIf="locations.length > 0" class="row">
+  <div class="col-12">
+    <h3 class="my-3">Aussuchen.</h3>
+    <div *ngIf="isLoading">
+      <app-spin-loader width="50px" height="50px" borderWidth="2px"></app-spin-loader>
+    </div>
+    <div *ngIf="!isLoading" class="row" (touchstart)="swipe($event, 'start')" (touchend)="swipe($event, 'end')">
+      <div class="card">
+        <div class="card-header" id="headingOne">
+          <h3 class="mb-0">
+            <strong>{{location.name}}</strong>
+          </h3>
+          {{location.description}}
+        </div>
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
+          <div class="card-body" style="padding:0">
+            <table *ngIf="location.menus.length > 0; else noMenu" class="table table-striped">
+              <tbody>
+                <tr *ngFor="let menu of location.menus">
+                  <td>{{menu.description}}</td>
+                  <td>{{menu.price}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <ng-template #noMenu>Für dieses Restaurant wurde keine Karte gefunden.</ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

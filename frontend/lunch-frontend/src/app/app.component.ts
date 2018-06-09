@@ -1,5 +1,4 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { LocationListComponent } from './components/location-list/location-list.component';
 import { Point } from './components/data-model';
 import {
   trigger,
@@ -28,14 +27,15 @@ export class AppComponent implements OnInit {
   isLoading = false;
   initialized = false;
   state = 'in';
-
-  @ViewChild(LocationListComponent) locationListComponent: LocationListComponent;
+  geolocation: Point;
+  mobile = false;
+  showLocations = false;
 
   ngOnInit() {
     const startInit: number = JSON.parse(window.localStorage.getItem('startInit'));
     const timeSinceInit = Date.now() - startInit;
-    const isMobile = window.innerWidth < 992;
-    const timeout = timeSinceInit < 1500 && isMobile ? 1500 - timeSinceInit : 0;
+    this.mobile = window.innerWidth < 992;
+    const timeout = timeSinceInit < 1500 && this.mobile ? 1500 - timeSinceInit : 0;
     setTimeout(() => {
       const d = document.getElementById('appInit');
       d.classList.add('d-none');
@@ -45,6 +45,7 @@ export class AppComponent implements OnInit {
   }
 
   findLocationsButtonClicked(point: Point) {
-    this.locationListComponent.findLocations(point);
+    this.geolocation = point;
+    this.showLocations = true;
   }
 }

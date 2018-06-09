@@ -40,17 +40,6 @@ export class FilterComponent implements OnInit {
   ngOnInit() {
     this.zoom = 12;
     this.address = '';
-
-    if (this.showMap) {
-      const mapProp = {
-        center: new google.maps.LatLng(18.5793, 73.8143),
-        zoom: 12,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      };
-      this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
-    }
-
-
     // if (navigator.geolocation) {
     //   navigator.geolocation.getCurrentPosition(
     //     success => {
@@ -64,6 +53,17 @@ export class FilterComponent implements OnInit {
     //     this.address = 'Am Sandtorkai 72-73, 20457 Hamburg, Deutschland';
     //    });
     // }
+
+    if (this.showMap) {
+      const mapProp = {
+        center: new google.maps.LatLng(18.5793, 73.8143),
+        zoom: 12,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+      this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+    }
+
+
     this.distanceM = '1000';
 
     this.createForm();
@@ -84,6 +84,10 @@ export class FilterComponent implements OnInit {
 
   addressChanged() {
     const input = this.filterForm.controls['address'].value;
+
+  }
+
+  useUserLocation() {
 
   }
 
@@ -118,9 +122,16 @@ export class FilterComponent implements OnInit {
       const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement, {
         types: ['address']
       });
+      autocomplete.addListener('place_changed', () => {
+          const place: google.maps.places.PlaceResult = autocomplete.getPlace();
+          if (place.geometry !== undefined && place.geometry !== null) {
+            this.latitude = place.geometry.location.lat();
+            this.longitude = place.geometry.location.lng();
+          }
+        });
     } else {
       this.try++;
-      console.log("Install try " + this.try);
+      console.log('Install try ' + this.try);
       setTimeout(() => this.installAutocomplete(), 1000);
     }
   }

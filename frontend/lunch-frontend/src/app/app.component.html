@@ -1,11 +1,19 @@
   <div id="content" *ngIf="initialized" [@flyInOut]="state">
     <div class="row my-4 d-none d-md-block">
       <div class="col-12">
-        <h1>Finde jetzt den perfekten Mittagstisch in deiner Nähe!</h1>
+        <h1 class="text-center">Finde jetzt den perfekten Mittagstisch in deiner Nähe!</h1>
       </div>
     </div>
 
     <app-filter (notifyParent)="findLocationsButtonClicked($event)"></app-filter>
+    <!-- <iframe
+  width="600"
+  height="450"
+  frameborder="0" style="border:0"
+  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBqWS7CkSFKyUCISOVHnoAkCaPYsyAfXhM&q=Space+Needle,Seattle+WA" allowfullscreen>
+</iframe> -->
 
-    <app-location-list ></app-location-list>
+
+    <app-mobile-location-list *ngIf="showLocations && mobile" [geolocation]="geolocation"></app-mobile-location-list>
+    <app-desktop-location-list *ngIf="showLocations && !mobile" [geolocation]="geolocation"></app-desktop-location-list>
 </div>
