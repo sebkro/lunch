@@ -28,8 +28,9 @@ export class FilterComponent implements OnInit {
   onlineState: string;
   userAgent: string;
   supportsGeo: string;
-  showMap: false;
+  showMap = false;
   try = 0;
+  geoLocationAvailable = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -61,6 +62,11 @@ export class FilterComponent implements OnInit {
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
       this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+
+    }
+
+    if (navigator.geolocation) {
+      this.geoLocationAvailable = true;
     }
 
 
@@ -88,7 +94,11 @@ export class FilterComponent implements OnInit {
   }
 
   useUserLocation() {
-
+    navigator.geolocation.getCurrentPosition(pos => {
+      this.latitude = pos.coords.latitude;
+      this.longitude = pos.coords.longitude;
+      this.notifyParent.emit(new Point(this.latitude, this.longitude, this.filterForm.controls['distanceM'].value));
+    });
   }
 
   placeMarker($event) {
